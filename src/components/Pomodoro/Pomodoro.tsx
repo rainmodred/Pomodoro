@@ -40,6 +40,11 @@ export default function Pomodoro(): JSX.Element {
     }
   }
 
+  function handleReset() {
+    setCurrentTime(DEFAULT_TIME);
+    setStarted(Mode.paused);
+  }
+
   return (
     <div>
       <h1>Pomodoro</h1>
@@ -55,6 +60,7 @@ export default function Pomodoro(): JSX.Element {
         <button onClick={handleToggleTimer}>
           {started === Mode.started ? 'pause' : 'start'}
         </button>
+        <button onClick={handleReset}>reset</button>
       </div>
       <button>settings</button>
     </div>

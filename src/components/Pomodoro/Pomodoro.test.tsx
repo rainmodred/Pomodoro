@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import Pomodoro from './Pomodoro';
 
+const DEFAULT_TIME = 1500000;
+
 describe('Pomodoro', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -45,7 +47,6 @@ describe('Pomodoro', () => {
   });
 
   it('on start button click start timer', async () => {
-    const DEFAULT_TIME = 1500000;
     render(<Pomodoro />);
 
     userEvent.click(screen.getByText(/start/i));
@@ -56,5 +57,20 @@ describe('Pomodoro', () => {
 
     expect(setInterval).toHaveBeenCalledTimes(1);
     expect(screen.getByText('00:00')).toBeInTheDocument();
+  });
+
+  it('reset click resets timer', () => {
+    render(<Pomodoro />);
+
+    userEvent.click(screen.getByText(/start/i));
+
+    act(() => {
+      jest.advanceTimersByTime(100000);
+    });
+
+    userEvent.click(screen.getByText(/reset/i));
+
+    expect(screen.getByText('25:00')).toBeInTheDocument();
+    expect(screen.getByText(/start/i)).toBeInTheDocument();
   });
 });
