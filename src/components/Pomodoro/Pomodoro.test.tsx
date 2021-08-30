@@ -28,49 +28,27 @@ describe('Pomodoro', () => {
       screen.getByRole('tab', { name: /long break/i }),
     ).toBeInTheDocument();
 
-    expect(screen.getByText(/25:00/i)).toBeInTheDocument();
-    expect(screen.getByText(/start/i)).toBeInTheDocument();
-    expect(screen.getByText(/setting/i)).toBeInTheDocument();
+    expect(screen.getByTestId('pomodoro-clock')).toBeVisible();
+    expect(screen.getByTestId('short break-clock')).not.toBeVisible();
+    expect(screen.getByTestId('long break-clock')).not.toBeVisible();
+
+    expect(screen.getByTestId('pomodoro-start')).toBeInTheDocument();
+    expect(screen.getByTestId('pomodoro-reset')).toBeInTheDocument();
   });
 
-  it('on timer button click it changes text', () => {
+  it('resets timer on tab change', () => {
     render(<Pomodoro />);
 
-    const start = screen.getByText(/start/i);
-    userEvent.click(start);
-    expect(screen.queryByText(/start/i)).not.toBeInTheDocument();
-
-    const pause = screen.getByText(/pause/i);
-    expect(screen.getByText(/pause/i)).toBeInTheDocument();
-    userEvent.click(pause);
-    expect(screen.queryByText(/pause/i)).not.toBeInTheDocument();
-  });
-
-  it('on start button click start timer', async () => {
-    render(<Pomodoro />);
-
-    userEvent.click(screen.getByText(/start/i));
-
-    act(() => {
-      jest.advanceTimersByTime(DEFAULT_TIME);
-    });
-
-    expect(setInterval).toHaveBeenCalledTimes(1);
-    expect(screen.getByText('00:00')).toBeInTheDocument();
-  });
-
-  it('reset click resets timer', () => {
-    render(<Pomodoro />);
-
-    userEvent.click(screen.getByText(/start/i));
+    userEvent.click(screen.getByTestId('pomodoro-start'));
 
     act(() => {
       jest.advanceTimersByTime(100000);
     });
 
-    userEvent.click(screen.getByText(/reset/i));
+    userEvent.click(screen.getByRole('tab', { name: /short break/i }));
+    expect(screen.getByTestId('short break-clock')).toHaveTextContent('05:00');
 
-    expect(screen.getByText('25:00')).toBeInTheDocument();
-    expect(screen.getByText(/start/i)).toBeInTheDocument();
+    userEvent.click(screen.getByRole('tab', { name: /pomodoro/i }));
+    expect(screen.getByTestId('pomodoro-clock')).toHaveTextContent('25:00');
   });
 });
