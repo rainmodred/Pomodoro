@@ -3,8 +3,6 @@ import userEvent from '@testing-library/user-event';
 
 import Pomodoro from './Pomodoro';
 
-const DEFAULT_TIME = 1500000;
-
 describe('Pomodoro', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -34,6 +32,7 @@ describe('Pomodoro', () => {
 
     expect(screen.getByTestId('pomodoro-start')).toBeInTheDocument();
     expect(screen.getByTestId('pomodoro-reset')).toBeInTheDocument();
+    expect(screen.getByText(/settings/i)).toBeInTheDocument();
   });
 
   it('resets timer on tab change', () => {
@@ -50,5 +49,38 @@ describe('Pomodoro', () => {
 
     userEvent.click(screen.getByRole('tab', { name: /pomodoro/i }));
     expect(screen.getByTestId('pomodoro-clock')).toHaveTextContent('25:00');
+  });
+
+  it('on settings click opens modal', () => {
+    render(<Pomodoro />);
+
+    userEvent.click(screen.getByText(/settings/i));
+
+    expect(screen.getByText(/time/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('spinbutton', { name: 'pomodoro' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('spinbutton', { name: 'short break' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('spinbutton', { name: 'long break' }),
+    ).toBeInTheDocument();
+  });
+
+  it('can change pomodoro time', () => {
+    render(<Pomodoro />);
+
+    userEvent.click(screen.getByText(/settings/i));
+
+    const input = screen.getByRole('spinbutton', { name: 'pomodoro' });
+    userEvent.clear(input);
+    userEvent.type(input, '20');
+    expect(input).toHaveValue(20);
+
+    userEvent.click(screen.getByText(/apply/i));
+
+    expect(screen.getByTestId('pomodoro-clock')).toHaveTextContent('20:00');
   });
 });
