@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import Clock from '../Clock/Clock';
 
 enum Status {
-  started = 'STARTED',
-  paused = 'PAUSED',
+  Started = 'STARTED',
+  Paused = 'PAUSED',
 }
 interface TimerProps {
   id: string;
@@ -12,12 +12,12 @@ interface TimerProps {
 }
 
 export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
-  const [status, setStatus] = useState(Status.paused);
+  const [status, setStatus] = useState(Status.Paused);
   const [currentTime, setCurrentTime] = useState(time);
 
   const reset = useCallback(() => {
     setCurrentTime(time);
-    setStatus(Status.paused);
+    setStatus(Status.Paused);
   }, [time]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
     }
 
     let id = 0;
-    if (status === Status.started) {
+    if (status === Status.Started) {
       id = window.setInterval(tick, 1000);
     }
 
@@ -41,15 +41,15 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
 
   useEffect(() => {
     if (currentTime === 0) {
-      setStatus(Status.paused);
+      setStatus(Status.Paused);
     }
   }, [currentTime]);
 
   function handleToggleTimer() {
-    if (status === Status.paused) {
-      setStatus(Status.started);
+    if (status === Status.Paused) {
+      setStatus(Status.Started);
     } else {
-      setStatus(Status.paused);
+      setStatus(Status.Paused);
     }
   }
 
@@ -61,7 +61,7 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
     <div>
       <Clock time={currentTime} id={id} />
       <button onClick={handleToggleTimer} data-testid={`${id}-start`}>
-        {status === Status.started ? 'pause' : 'start'}
+        {status === Status.Started ? 'pause' : 'start'}
       </button>
       <button onClick={handleReset} data-testid={`${id}-reset`}>
         reset
