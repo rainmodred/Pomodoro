@@ -30,7 +30,6 @@ export default function SettingsModal({
   }
 
   function handleChange(label: string, value: string) {
-    console.log(label, value);
     setState({
       ...state,
       [label]: value,

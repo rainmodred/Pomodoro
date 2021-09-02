@@ -52,6 +52,7 @@ describe('pomodoro app', () => {
   });
 
   it('can change settings', () => {
+    expect(localStorage.getItem('settings')).to.equal(null);
     cy.findByRole('button', {
       name: /settings/i,
     }).click();
@@ -68,7 +69,28 @@ describe('pomodoro app', () => {
 
     cy.findByRole('button', {
       name: /apply/i,
-    }).click();
+    })
+      .click()
+      .should(() => {
+        expect(
+          JSON.parse(window.localStorage.getItem('settings')),
+        ).to.deep.equal({
+          timers: [
+            {
+              label: 'pomodoro',
+              time: 1800,
+            },
+            {
+              label: 'short break',
+              time: 600,
+            },
+            {
+              label: 'long break',
+              time: 600,
+            },
+          ],
+        });
+      });
     cy.findByTestId('pomodoro-clock').should('have.text', '30:00');
     cy.findByRole('tab', {
       name: /short break/i,

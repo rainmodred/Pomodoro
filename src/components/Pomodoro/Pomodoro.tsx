@@ -6,6 +6,7 @@ import '@reach/tabs/styles.css';
 
 import Timer from '../Timer/Timer';
 import SettingsModal from '../SettingsModal/SettingsModal';
+import { getFromStrorage, setToStorage } from '../../utils';
 
 type ACTIONTYPE = {
   type: 'updateTimer';
@@ -20,16 +21,22 @@ const initialState = {
   ],
 };
 
+function getInitialState() {
+  return getFromStrorage('settings') || initialState;
+}
+
 function reducer(state: typeof initialState, action: ACTIONTYPE) {
   switch (action.type) {
     case 'updateTimer':
-      return {
+      const updatedTimers = {
         ...state,
         timers: Object.entries(action.payload).map(([label, value]) => ({
           label,
           time: Number(value) * 60,
         })),
       };
+      setToStorage('settings', updatedTimers);
+      return updatedTimers;
 
     default:
       throw new Error();
@@ -42,7 +49,7 @@ export default function Pomodoro(): JSX.Element {
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, getInitialState());
   const { timers } = state;
 
   function handleTabsChange(index: number) {
