@@ -6,11 +6,10 @@ import '@reach/tabs/styles.css';
 
 import Timer from '../Timer/Timer';
 import SettingsModal from '../SettingsModal/SettingsModal';
-import { TimerType } from '../../types.';
 
 type ACTIONTYPE = {
   type: 'updateTimer';
-  payload: { label: string; time: number }[];
+  payload: Record<string, string>;
 };
 
 const initialState = {
@@ -26,7 +25,10 @@ function reducer(state: typeof initialState, action: ACTIONTYPE) {
     case 'updateTimer':
       return {
         ...state,
-        timers: action.payload,
+        timers: Object.entries(action.payload).map(([label, value]) => ({
+          label,
+          time: Number(value) * 60,
+        })),
       };
 
     default:
@@ -47,7 +49,7 @@ export default function Pomodoro(): JSX.Element {
     setTabIndex(index);
   }
 
-  function handleApplySettings(updatedTimers: TimerType[]) {
+  function handleApplySettings(updatedTimers: Record<string, string>) {
     dispatch({ type: 'updateTimer', payload: updatedTimers });
   }
 

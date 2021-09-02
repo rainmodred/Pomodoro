@@ -13,15 +13,21 @@ export default function NumberInput({
   value,
   onChange,
 }: NumberInputProps): JSX.Element {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    onChange(name, value);
+  }
+
   return (
     <label>
       {label}
       <input
+        name={label}
         min={min}
         max={max}
         type="number"
         value={value}
-        onChange={e => onChange(label, e.target.value)}
+        onChange={handleChange}
       />
     </label>
   );
