@@ -8,6 +8,8 @@ import Timer from '../Timer/Timer';
 import SettingsModal from '../SettingsModal/SettingsModal';
 import { getFromStrorage, setToStorage } from '../../utils';
 
+import styles from './Pomodoro.module.css';
+
 type ACTIONTYPE = {
   type: 'updateTimer';
   payload: Record<string, string>;
@@ -61,8 +63,8 @@ export default function Pomodoro(): JSX.Element {
   }
 
   return (
-    <div>
-      <h1>Pomodoro</h1>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Pomodoro</h1>
       <Tabs tabIndex={tabIndex} onChange={handleTabsChange}>
         <TabList>
           {timers.map(({ label }) => (

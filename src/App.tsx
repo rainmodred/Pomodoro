@@ -1,3 +1,5 @@
+import Pomodoro from './components/Pomodoro/Pomodoro';
+
 export default function App() {
-  return <div>test</div>;
+  return <Pomodoro />;
 }
