@@ -60,7 +60,11 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
   return (
     <div>
       <Clock time={currentTime} id={id} />
-      <button onClick={handleToggleTimer} data-testid={`${id}-start`}>
+      <button
+        onClick={handleToggleTimer}
+        data-testid={`${id}-start`}
+        disabled={currentTime === 0}
+      >
         {status === Status.Started ? 'pause' : 'start'}
       </button>
       <button onClick={handleReset} data-testid={`${id}-reset`}>
