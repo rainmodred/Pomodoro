@@ -22,9 +22,7 @@ describe('pomodoro app', () => {
       name: /start/i,
     }).click();
     cy.tick(2000);
-    cy.findByRole('button', {
-      name: /reset/i,
-    }).click();
+    cy.findByTestId('pomodoro-reset').click();
     cy.findByTestId('pomodoro-clock').should('have.text', '25:00');
   });
 
@@ -53,9 +51,7 @@ describe('pomodoro app', () => {
 
   it('can change settings', () => {
     expect(localStorage.getItem('settings')).to.equal(null);
-    cy.findByRole('button', {
-      name: /settings/i,
-    }).click();
+    cy.findByTestId('settings').click();
     cy.findByRole('spinbutton', {
       name: /pomodoro/i,
     })

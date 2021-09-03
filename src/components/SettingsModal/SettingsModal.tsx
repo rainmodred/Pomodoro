@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 import NumberInput from '../NumberInput/NumberInput';
 
+import './SettingsModal.css';
+
 interface SettingsModalProps {
   isOpen: boolean;
   timers: { label: string; time: number }[];
@@ -42,9 +44,10 @@ export default function SettingsModal({
         <VisuallyHidden>Close</VisuallyHidden>
         <span aria-hidden>×</span>
       </button>
-      <h2>Settings</h2>
-      <h3>Time (minutes)</h3>
-      <form onSubmit={handleApply}>
+      <h2 className={'settings__heading'}>Settings</h2>
+      <hr />
+      <h3 className={'settings__subHeading'}>Time (minutes)</h3>
+      <form className={'settings__form'} onSubmit={handleApply}>
         {Object.entries(state).map(([label, time]) => (
           <NumberInput
             key={label}
@@ -56,7 +59,9 @@ export default function SettingsModal({
           />
         ))}
 
-        <button type="submit">Apply</button>
+        <button className={'settings__submit'} type="submit">
+          Apply
+        </button>
       </form>
     </Dialog>
   );

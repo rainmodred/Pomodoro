@@ -32,7 +32,7 @@ describe('Pomodoro', () => {
 
     expect(screen.getByTestId('pomodoro-start')).toBeInTheDocument();
     expect(screen.getByTestId('pomodoro-reset')).toBeInTheDocument();
-    expect(screen.getByText(/settings/i)).toBeInTheDocument();
+    expect(screen.getByTestId('settings')).toBeInTheDocument();
   });
 
   it('resets timer on tab change', () => {
@@ -54,7 +54,7 @@ describe('Pomodoro', () => {
   it('on settings click opens modal', () => {
     render(<Pomodoro />);
 
-    userEvent.click(screen.getByText(/settings/i));
+    userEvent.click(screen.getByTestId('settings'));
 
     expect(screen.getByText(/time/i)).toBeInTheDocument();
 
@@ -72,7 +72,7 @@ describe('Pomodoro', () => {
   it('can change pomodoro time', () => {
     render(<Pomodoro />);
 
-    userEvent.click(screen.getByText(/settings/i));
+    userEvent.click(screen.getByTestId('settings'));
 
     const input = screen.getByRole('spinbutton', { name: 'pomodoro' });
     userEvent.clear(input);

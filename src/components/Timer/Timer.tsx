@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import Clock from '../Clock/Clock';
+import ProgressRing from '../ProgressRing/ProgressRing';
+
+import styles from './Timer.module.css';
 
 enum Status {
   Started = 'STARTED',
@@ -14,10 +17,12 @@ interface TimerProps {
 export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
   const [status, setStatus] = useState(Status.Paused);
   const [currentTime, setCurrentTime] = useState(time);
+  const [progress, setProgress] = useState(100);
 
   const reset = useCallback(() => {
     setCurrentTime(time);
     setStatus(Status.Paused);
+    setProgress(100);
   }, [time]);
 
   useEffect(() => {
@@ -43,6 +48,8 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
     if (currentTime === 0) {
       setStatus(Status.Paused);
     }
+
+    setProgress(Math.floor((currentTime / time) * 100));
   }, [currentTime]);
 
   function handleToggleTimer() {
@@ -58,18 +65,48 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
   }
 
   return (
-    <div>
-      <Clock time={currentTime} id={id} />
-      <button
-        onClick={handleToggleTimer}
-        data-testid={`${id}-start`}
-        disabled={currentTime === 0}
-      >
-        {status === Status.Started ? 'pause' : 'start'}
-      </button>
-      <button onClick={handleReset} data-testid={`${id}-reset`}>
-        reset
-      </button>
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
+        <button
+          onClick={handleToggleTimer}
+          data-testid={`${id}-start`}
+          disabled={currentTime === 0}
+          className={styles.timer}
+        >
+          <ProgressRing
+            progress={progress}
+            radius={140}
+            stroke={4}
+            color={'#75f3f7'}
+          />
+          <Clock time={currentTime} id={id} />
+          <p className={styles.status}>
+            {status === Status.Started ? 'pause' : 'start'}
+          </p>
+        </button>
+        <button
+          className={styles.reset}
+          onClick={handleReset}
+          data-testid={`${id}-reset`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="icon icon-tabler icon-tabler-refresh"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="#75f3f7"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }

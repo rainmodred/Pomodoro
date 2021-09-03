@@ -1,3 +1,5 @@
+import styles from './NumberInput.module.css';
+
 interface NumberInputProps {
   min: number;
   max: number;
@@ -19,9 +21,13 @@ export default function NumberInput({
   }
 
   return (
-    <label>
-      {label}
+    <div className={styles.container}>
+      <label className={styles.label} htmlFor={label}>
+        {label}
+      </label>
       <input
+        className={styles.input}
+        id={label}
         name={label}
         min={min}
         max={max}
@@ -29,6 +35,6 @@ export default function NumberInput({
         value={value}
         onChange={handleChange}
       />
-    </label>
+    </div>
   );
 }

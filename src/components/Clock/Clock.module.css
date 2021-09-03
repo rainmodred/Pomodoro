@@ -1,0 +1,9 @@
+.clock {
+  color: var(--color-text);
+  font-size: 4rem;
+}
+
+.semicolon {
+  position: relative;
+  top: -0.1em;
+}

@@ -1,0 +1,17 @@
+.container {
+  display: grid;
+  row-gap: 5px;
+}
+
+.label {
+  font-size: 12px;
+}
+
+.input {
+  border-radius: 5px;
+  border: 1px solid grey;
+  background-color: #eff1fa;
+  padding: 10px;
+  max-width: 100px;
+  font-weight: bold;
+}

@@ -1,0 +1,13 @@
+.container {
+  display: grid;
+  grid-template-rows: 5rem 1fr 5rem;
+  justify-content: center;
+  height: 100vh;
+}
+
+.heading {
+  color: var(--color-text);
+  text-transform: uppercase;
+  justify-self: center;
+  align-self: center;
+}
