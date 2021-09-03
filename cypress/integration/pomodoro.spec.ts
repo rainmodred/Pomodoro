@@ -51,9 +51,7 @@ describe('pomodoro app', () => {
 
   it('can change settings', () => {
     expect(localStorage.getItem('settings')).to.equal(null);
-    cy.findByRole('button', {
-      name: /settings/i,
-    }).click();
+    cy.findByTestId('settings').click();
     cy.findByRole('spinbutton', {
       name: /pomodoro/i,
     })
