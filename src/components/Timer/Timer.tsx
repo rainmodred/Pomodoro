@@ -49,7 +49,6 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
       setStatus(Status.Paused);
     }
 
-    console.log(Math.floor((currentTime / time) * 100));
     setProgress(Math.floor((currentTime / time) * 100));
   }, [currentTime]);
 
@@ -67,22 +66,24 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
 
   return (
     <div className={styles.container}>
-      <button
-        onClick={handleToggleTimer}
-        data-testid={`${id}-start`}
-        className={styles.timer}
-        disabled={currentTime === 0}
-      >
-        <ProgressRing
-          progress={progress}
-          radius={140}
-          stroke={4}
-          color={'#75f3f7'}
-        />
-        <Clock time={currentTime} id={id} />
-        <p className={styles.status}>
-          {status === Status.Started ? 'pause' : 'start'}
-        </p>
+      <div className={styles.wrapper}>
+        <button
+          onClick={handleToggleTimer}
+          data-testid={`${id}-start`}
+          disabled={currentTime === 0}
+          className={styles.timer}
+        >
+          <ProgressRing
+            progress={progress}
+            radius={140}
+            stroke={4}
+            color={'#75f3f7'}
+          />
+          <Clock time={currentTime} id={id} />
+          <p className={styles.status}>
+            {status === Status.Started ? 'pause' : 'start'}
+          </p>
+        </button>
         <button
           className={styles.reset}
           onClick={handleReset}
@@ -94,18 +95,18 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
             width="28"
             height="28"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             stroke="#75f3f7"
             fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
             <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
           </svg>
         </button>
-      </button>
+      </div>
     </div>
   );
 }

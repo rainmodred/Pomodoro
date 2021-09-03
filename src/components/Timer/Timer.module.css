@@ -6,6 +6,12 @@
   align-items: center;
 }
 
+.wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
 .timer {
   background-color: var(--colorl-light-bg);
   border-radius: 50%;
@@ -13,7 +19,6 @@
   border: none;
   height: 250px;
   width: 250px;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;

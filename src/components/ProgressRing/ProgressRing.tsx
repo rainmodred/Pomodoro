@@ -24,7 +24,6 @@ export default function ProgressRing({
         strokeWidth={stroke}
         strokeDasharray={circumference + ' ' + circumference}
         style={{ strokeDashoffset }}
-        stroke-width={stroke}
         r={normalizedRadius}
         cx={radius}
         cy={radius}
