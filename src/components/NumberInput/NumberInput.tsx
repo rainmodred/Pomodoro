@@ -1,33 +1,33 @@
-import { useState } from 'react';
-
 interface NumberInputProps {
   min: number;
   max: number;
   label: string;
-  defaultValue: string;
+  value: string;
+  onChange: (label: string, value: string) => void;
 }
 
 export default function NumberInput({
   min,
   max,
   label,
-  defaultValue,
+  value,
+  onChange,
 }: NumberInputProps): JSX.Element {
-  const [value, setValue] = useState(defaultValue);
-
-  function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    onChange(name, value);
   }
 
   return (
     <label>
       {label}
       <input
+        name={label}
         min={min}
         max={max}
         type="number"
         value={value}
-        onChange={handleOnChange}
+        onChange={handleChange}
       />
     </label>
   );

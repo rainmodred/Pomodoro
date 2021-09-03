@@ -62,4 +62,16 @@ describe('Timer', () => {
     expect(screen.getByText('25:00')).toBeInTheDocument();
     expect(screen.getByText(/start/i)).toBeInTheDocument();
   });
+
+  it('on time end start/pause button is disabled', () => {
+    render(<Timer id="meow" tabIndex={0} time={1} />);
+
+    userEvent.click(screen.getByText(/start/i));
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+
+    expect(screen.getByText(/start/i)).toBeDisabled();
+  });
 });
