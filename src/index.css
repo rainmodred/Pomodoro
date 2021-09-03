@@ -43,3 +43,11 @@ body {
   color: var(--color-dark-bg);
   border-radius: 40px;
 }
+
+[data-reach-tab-panels] {
+  height: 100%;
+}
+
+[data-reach-tab-panel] {
+  height: 100%;
+}
