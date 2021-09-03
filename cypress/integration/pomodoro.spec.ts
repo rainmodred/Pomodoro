@@ -22,9 +22,7 @@ describe('pomodoro app', () => {
       name: /start/i,
     }).click();
     cy.tick(2000);
-    cy.findByRole('button', {
-      name: /reset/i,
-    }).click();
+    cy.findByTestId('pomodoro-reset').click();
     cy.findByTestId('pomodoro-clock').should('have.text', '25:00');
   });
 
