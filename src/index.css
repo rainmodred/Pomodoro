@@ -23,6 +23,12 @@ body {
   color: white;
 }
 
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
 /* Reach Tabs */
 
 [data-reach-tab-list] {
