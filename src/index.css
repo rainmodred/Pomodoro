@@ -1,14 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import './styles/colors.css';
-/* input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
 
-input[type='number'] {
-  -moz-appearance: textfield;
-} */
 *,
 *::after,
 *::before {
@@ -27,33 +19,4 @@ button {
   border: none;
   background: none;
   cursor: pointer;
-}
-
-/* Reach Tabs */
-
-[data-reach-tab-list] {
-  background-color: var(--colorl-light-bg);
-  border-radius: 40px;
-  padding: 5px;
-  gap: 5px;
-}
-
-[data-reach-tab] {
-  font-size: 0.75rem;
-  font-weight: bold;
-  padding: 5px 10px;
-}
-
-[data-reach-tab][data-selected] {
-  background-color: var(--color-red);
-  color: var(--color-dark-bg);
-  border-radius: 40px;
-}
-
-[data-reach-tab-panels] {
-  height: 100%;
-}
-
-[data-reach-tab-panel] {
-  height: 100%;
 }
