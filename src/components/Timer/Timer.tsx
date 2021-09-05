@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import Clock from '../Clock/Clock';
 import ProgressRing from '../ProgressRing/ProgressRing';
 
 import styles from './Timer.module.css';
 
 enum Status {
+  Idle = 'IDLE',
   Started = 'STARTED',
   Paused = 'PAUSED',
 }
@@ -15,7 +17,7 @@ interface TimerProps {
 }
 
 export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
-  const [status, setStatus] = useState(Status.Paused);
+  const [status, setStatus] = useState(Status.Idle);
   const [currentTime, setCurrentTime] = useState(time);
   const [progress, setProgress] = useState(100);
 
@@ -47,6 +49,10 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
   useEffect(() => {
     if (currentTime === 0) {
       setStatus(Status.Paused);
+    }
+
+    if (status !== Status.Idle) {
+      document.title = new Date(currentTime * 1000).toISOString().slice(14, 19);
     }
 
     setProgress(Math.floor((currentTime / time) * 100));
