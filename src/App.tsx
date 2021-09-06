@@ -1,5 +1,10 @@
 import Pomodoro from './components/Pomodoro/Pomodoro';
+import { SettingsProvider } from './context/SettingsContext';
 
 export default function App() {
-  return <Pomodoro />;
+  return (
+    <SettingsProvider>
+      <Pomodoro />
+    </SettingsProvider>
+  );
 }

@@ -1,6 +1,7 @@
 import { Dialog } from '@reach/dialog';
 import VisuallyHidden from '@reach/visually-hidden';
 import { useState } from 'react';
+import { useSettings } from '../../context/SettingsContext';
 
 import NumberInput from '../NumberInput/NumberInput';
 
@@ -8,17 +9,15 @@ import './SettingsModal.css';
 
 interface SettingsModalProps {
   isOpen: boolean;
-  timers: { label: string; time: number }[];
   close: () => void;
-  onSubmit: (values: Record<string, string>) => void;
 }
 
 export default function SettingsModal({
   isOpen,
-  timers,
   close,
-  onSubmit,
 }: SettingsModalProps): JSX.Element {
+  const [settings, dispatch] = useSettings();
+  const { timers } = settings;
   const [state, setState] = useState(() => {
     const res: Record<string, string> = {};
     timers.forEach(({ label, time }) => (res[label] = (time / 60).toString()));
@@ -27,7 +26,8 @@ export default function SettingsModal({
 
   function handleApply(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmit(state);
+    dispatch({ type: 'updateTimer', payload: state });
+
     close();
   }
 

@@ -1,7 +1,12 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { SettingsProvider } from '../../context/SettingsContext';
 
 import Pomodoro from './Pomodoro';
+
+const wrapper = ({ children }) => (
+  <SettingsProvider>{children}</SettingsProvider>
+);
 
 describe('Pomodoro', () => {
   beforeEach(() => {
@@ -14,7 +19,7 @@ describe('Pomodoro', () => {
   });
 
   it('renders Pomodoro', () => {
-    render(<Pomodoro />);
+    render(<Pomodoro />, { wrapper });
 
     expect(screen.getByText('Pomodoro')).toBeInTheDocument();
 
@@ -36,7 +41,7 @@ describe('Pomodoro', () => {
   });
 
   it('resets timer on tab change', () => {
-    render(<Pomodoro />);
+    render(<Pomodoro />, { wrapper });
 
     userEvent.click(screen.getByTestId('pomodoro-start'));
 
@@ -52,7 +57,7 @@ describe('Pomodoro', () => {
   });
 
   it('on settings click opens modal', () => {
-    render(<Pomodoro />);
+    render(<Pomodoro />, { wrapper });
 
     userEvent.click(screen.getByTestId('settings'));
 
@@ -70,7 +75,7 @@ describe('Pomodoro', () => {
   });
 
   it('can change pomodoro time', () => {
-    render(<Pomodoro />);
+    render(<Pomodoro />, { wrapper });
 
     userEvent.click(screen.getByTestId('settings'));
 
