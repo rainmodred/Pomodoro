@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import Timer from './Timer';
-
+import { wrapper } from '../../utils';
 const DEFAULT_TIME = 1500;
 
 describe('Timer', () => {
@@ -16,7 +16,7 @@ describe('Timer', () => {
   });
 
   it('renders Timer', () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />);
+    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
 
     expect(screen.getByTestId('meow-start')).toBeInTheDocument();
     expect(screen.getByTestId('meow-clock')).toBeInTheDocument();
@@ -25,7 +25,7 @@ describe('Timer', () => {
   });
 
   it('on timer button click it changes text', () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />);
+    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
 
     const startButton = screen.getByTestId('meow-start');
     userEvent.click(startButton);
@@ -38,7 +38,7 @@ describe('Timer', () => {
   });
 
   it('on start button click start timer', async () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />);
+    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
 
     userEvent.click(screen.getByTestId('meow-start'));
 
@@ -51,7 +51,7 @@ describe('Timer', () => {
   });
 
   it('reset click resets timer', () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />);
+    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
 
     userEvent.click(screen.getByTestId('meow-start'));
 
@@ -66,7 +66,7 @@ describe('Timer', () => {
   });
 
   it('on time end start/pause button is disabled', () => {
-    render(<Timer id="meow" tabIndex={0} time={1} />);
+    render(<Timer id="meow" tabIndex={0} time={1} />, { wrapper });
 
     userEvent.click(screen.getByTestId('meow-start'));
 

@@ -14,8 +14,8 @@
 }
 
 [data-reach-tab][data-selected] {
-  background-color: var(--color-red);
-  color: var(--color-dark-bg);
+  background-color: var(--color-main);
+  color: var(--color-bg);
   border-radius: 40px;
 }
 
@@ -30,20 +30,35 @@
 [data-reach-dialog-content] {
   border-radius: 20px;
   color: var(--color-bg);
-  padding: 1rem 1rem 2rem 1rem;
+  padding: 2rem 2rem 2rem 2rem;
   position: relative;
   max-width: 448px;
 }
 
 .close-button {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 30px;
+  right: 30px;
+  padding: 5px;
+  font-size: 150%;
 }
 
 .settings__heading {
   font-size: 1.25rem;
   padding: 10px 0;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.settings__heading::after {
+  position: absolute;
+  left: 0;
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: rgb(221, 218, 218);
+  bottom: -10px;
 }
 
 .settings__subHeading {
@@ -53,9 +68,26 @@
 }
 
 .settings__form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.time {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  position: relative;
+}
+
+.time::after {
+  position: absolute;
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: rgb(221, 218, 218);
+  bottom: -20px;
 }
 
 .settings__submit {
@@ -69,8 +101,65 @@
   border-radius: 20px;
   transition: all 500ms;
   font-size: 1.2rem;
+  outline: none;
 }
 
 .settings__submit:hover {
   background-color: #f06264;
+}
+
+.settings__submit:focus {
+  box-shadow: 0 0 0 0.05em #000, 0 0 0.15em 0.1em currentColor;
+}
+
+.colors {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.colors__inputs {
+  display: flex;
+}
+
+.radio {
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-gap: 0.5em;
+}
+
+.radio__input {
+  display: flex;
+}
+
+.radio__input input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio__input input:focus + .radio__control {
+  box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
+}
+
+.radio__control svg {
+  display: none;
+}
+
+.radio__input input:checked + .radio__control svg {
+  display: block;
+}
+
+.radio__control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background-color: teal;
+}
+.radio__input:focus + .radio__control {
+  box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
 }

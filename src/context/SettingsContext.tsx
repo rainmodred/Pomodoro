@@ -1,18 +1,30 @@
-import { createContext, useContext, useReducer, useState } from 'react';
+import { createContext, useContext, useReducer } from 'react';
 import { getFromStrorage, setToStorage } from '../utils';
+
+let root = document.documentElement;
 
 type TimerType = {
   label: string;
   time: number;
 };
 
+export type Color = {
+  label: string;
+  value: string;
+  checked: boolean;
+};
+
 type Settings = {
   timers: TimerType[];
+  colors: Color[];
 };
 
 type ACTIONTYPE = {
-  type: 'updateTimer';
-  payload: Record<string, string>;
+  type: 'updateSettings';
+  payload: {
+    timers: Record<string, string>;
+    selectedColor: string;
+  };
 };
 
 const initialState = {
@@ -20,6 +32,11 @@ const initialState = {
     { label: 'pomodoro', time: 1500 },
     { label: 'short break', time: 300 },
     { label: 'long break', time: 600 },
+  ],
+  colors: [
+    { label: 'red', value: '#f67174', checked: true },
+    { label: 'blue', value: '#75f3f7', checked: false },
+    { label: 'purple', value: '#d880f5', checked: false },
   ],
 };
 
@@ -29,16 +46,24 @@ function getInitialState() {
 
 function reducer(state: typeof initialState, action: ACTIONTYPE) {
   switch (action.type) {
-    case 'updateTimer':
-      const updatedTimers = {
+    case 'updateSettings':
+      const { selectedColor, ...rest } = action.payload;
+
+      const updatedSetting = {
         ...state,
-        timers: Object.entries(action.payload).map(([label, value]) => ({
+        timers: Object.entries(rest.timers).map(([label, value]) => ({
           label,
           time: Number(value) * 60,
         })),
+        colors: state.colors.map(color => ({
+          ...color,
+          checked: color.value === selectedColor,
+        })),
       };
-      setToStorage('settings', updatedTimers);
-      return updatedTimers;
+      setToStorage('settings', updatedSetting);
+
+      root.style.setProperty('--color-main', selectedColor);
+      return updatedSetting;
 
     default:
       throw new Error();

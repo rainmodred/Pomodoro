@@ -1,12 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SettingsProvider } from '../../context/SettingsContext';
+import { wrapper } from '../../utils';
 
 import Pomodoro from './Pomodoro';
-
-const wrapper = ({ children }) => (
-  <SettingsProvider>{children}</SettingsProvider>
-);
 
 describe('Pomodoro', () => {
   beforeEach(() => {

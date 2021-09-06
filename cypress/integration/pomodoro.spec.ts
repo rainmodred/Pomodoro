@@ -85,6 +85,23 @@ describe('pomodoro app', () => {
               time: 600,
             },
           ],
+          colors: [
+            {
+              label: 'red',
+              value: '#f67174',
+              checked: true,
+            },
+            {
+              label: 'blue',
+              value: '#75f3f7',
+              checked: false,
+            },
+            {
+              label: 'purple',
+              value: '#d880f5',
+              checked: false,
+            },
+          ],
         });
       });
     cy.findByTestId('pomodoro-clock').should('have.text', '30:00');

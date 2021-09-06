@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSettings } from '../../context/SettingsContext';
 
 import Clock from '../Clock/Clock';
 import ProgressRing from '../ProgressRing/ProgressRing';
@@ -20,6 +21,9 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
   const [status, setStatus] = useState(Status.Idle);
   const [currentTime, setCurrentTime] = useState(time);
   const [progress, setProgress] = useState(100);
+  const [{ colors }] = useSettings();
+
+  const selectedColor = colors.find(color => color.checked)?.value as string;
 
   const reset = useCallback(() => {
     setCurrentTime(time);
@@ -82,8 +86,8 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
           <ProgressRing
             progress={progress}
             radius={140}
-            stroke={4}
-            color={'#75f3f7'}
+            stroke={8}
+            color={selectedColor}
           />
           <Clock time={currentTime} id={id} />
           <p className={styles.status}>
