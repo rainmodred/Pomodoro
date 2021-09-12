@@ -12,7 +12,7 @@ function setToStorage<T>(key: string, value: T) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
-const wrapper = ({ children }) => (
+const wrapper: React.FC = ({ children }) => (
   <SettingsProvider>{children}</SettingsProvider>
 );
 
