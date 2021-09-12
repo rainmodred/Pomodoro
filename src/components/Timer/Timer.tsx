@@ -1,16 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 
 import Clock from '../Clock/Clock';
 import ProgressRing from '../ProgressRing/ProgressRing';
 
 import styles from './Timer.module.css';
+import useTimer from './useTimer';
 
-enum Status {
-  Idle = 'IDLE',
-  Started = 'STARTED',
-  Paused = 'PAUSED',
-}
 interface TimerProps {
   id: string;
   time: number;
@@ -18,59 +14,24 @@ interface TimerProps {
 }
 
 export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
-  const [status, setStatus] = useState(Status.Idle);
-  const [currentTime, setCurrentTime] = useState(time);
+  const { status, currentTime, toggle, reset } = useTimer(time);
+
   const [progress, setProgress] = useState(100);
   const [{ colors }] = useSettings();
 
   const selectedColor = colors.find(color => color.checked)?.value as string;
 
-  const reset = useCallback(() => {
-    setCurrentTime(time);
-    setStatus(Status.Paused);
-    setProgress(100);
-  }, [time]);
-
   useEffect(() => {
+    setProgress(100);
     reset();
   }, [tabIndex, reset]);
 
   useEffect(() => {
-    function tick() {
-      setCurrentTime(currentTime => (currentTime === 0 ? 0 : currentTime - 1));
-    }
-
-    let id = 0;
-    if (status === Status.Started) {
-      id = window.setInterval(tick, 1000);
-    }
-
-    return () => {
-      window.clearInterval(id);
-    };
-  }, [status]);
-
-  useEffect(() => {
-    if (currentTime === 0) {
-      setStatus(Status.Paused);
-    }
-
-    if (status !== Status.Idle) {
-      document.title = new Date(currentTime * 1000).toISOString().slice(14, 19);
-    }
-
     setProgress(Math.floor((currentTime / time) * 100));
-  }, [currentTime]);
-
-  function handleToggleTimer() {
-    if (status === Status.Paused) {
-      setStatus(Status.Started);
-    } else {
-      setStatus(Status.Paused);
-    }
-  }
+  }, [currentTime, time]);
 
   function handleReset() {
+    setProgress(100);
     reset();
   }
 
@@ -78,7 +39,7 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <button
-          onClick={handleToggleTimer}
+          onClick={toggle}
           data-testid={`${id}-start`}
           disabled={currentTime === 0}
           className={styles.timer}
@@ -90,9 +51,7 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
             color={selectedColor}
           />
           <Clock time={currentTime} id={id} />
-          <p className={styles.status}>
-            {status === Status.Started ? 'pause' : 'start'}
-          </p>
+          <p className={styles.status}>{status}</p>
         </button>
         <button
           className={styles.reset}

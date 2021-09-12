@@ -75,4 +75,16 @@ describe('Timer', () => {
 
     expect(screen.getByTestId('meow-start')).toBeDisabled();
   });
+
+  it('should stop timer on time end', () => {
+    render(<Timer id="meow" tabIndex={0} time={1} />, { wrapper });
+
+    userEvent.click(screen.getByTestId('meow-start'));
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+
+    expect(screen.getByTestId('meow-clock')).toHaveTextContent('00:00');
+  });
 });
