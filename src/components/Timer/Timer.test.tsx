@@ -31,7 +31,6 @@ describe('Timer', () => {
     userEvent.click(startButton);
     expect(screen.queryByText(/start/i)).not.toBeInTheDocument();
 
-    const pause = screen.getByText(/pause/i);
     expect(screen.getByText(/pause/i)).toBeInTheDocument();
     userEvent.click(startButton);
     expect(screen.queryByText(/pause/i)).not.toBeInTheDocument();
