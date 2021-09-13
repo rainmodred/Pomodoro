@@ -1,4 +1,4 @@
-.close-button {
+.close {
   position: absolute;
   top: 30px;
   right: 30px;
@@ -6,14 +6,14 @@
   font-size: 150%;
 }
 
-.settings__heading {
+.heading {
   font-size: 1.25rem;
   padding: 10px 0;
   position: relative;
   margin-bottom: 20px;
 }
 
-.settings__heading::after {
+.heading::after {
   position: absolute;
   left: 0;
   content: '';
@@ -24,13 +24,13 @@
   bottom: -10px;
 }
 
-.settings__subHeading {
+.subHeading {
   font-size: 0.875rem;
   text-transform: uppercase;
   padding: 10px 0;
 }
 
-.settings__form {
+.form {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -53,7 +53,7 @@
   bottom: -20px;
 }
 
-.settings__submit {
+.submit {
   position: absolute;
   bottom: -8%;
   left: 50%;
@@ -67,11 +67,11 @@
   outline: none;
 }
 
-.settings__submit:hover {
+.submit:hover {
   background-color: #f06264;
 }
 
-.settings__submit:focus {
+.submit:focus {
   box-shadow: 0 0 0 0.05em #000, 0 0 0.15em 0.1em currentColor;
 }
 
@@ -82,7 +82,7 @@
   width: 100%;
 }
 
-.colors__inputs {
+.colorsInputs {
   display: flex;
 }
 
@@ -92,29 +92,29 @@
   grid-gap: 0.5em;
 }
 
-.radio__input {
+.radioInput {
   display: flex;
 }
 
-.radio__input input {
+.radioInput input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.radio__input input:focus + .radio__control {
+.radioInput input:focus + .radioControl {
   box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
 }
 
-.radio__control svg {
+.radioControl svg {
   display: none;
 }
 
-.radio__input input:checked + .radio__control svg {
+.radioInput input:checked + .radioControl svg {
   display: block;
 }
 
-.radio__control {
+.radioControl {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,6 +123,6 @@
   border-radius: 50%;
   background-color: teal;
 }
-.radio__input:focus + .radio__control {
+.radioInput:focus + .radioControl {
   box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
 }

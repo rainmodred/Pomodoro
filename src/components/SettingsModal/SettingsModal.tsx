@@ -5,7 +5,7 @@ import { useSettings } from '../../context/SettingsContext';
 
 import NumberInput from '../NumberInput/NumberInput';
 
-import './SettingsModal.css';
+import styles from './SettingsModal.module.css';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -62,14 +62,14 @@ export default function SettingsModal({
 
   return (
     <Dialog isOpen={isOpen} onDismiss={close} aria-label="settings">
-      <button className="close-button" onClick={close}>
+      <button className={styles.close} onClick={close}>
         <VisuallyHidden>Close</VisuallyHidden>
         <span aria-hidden>×</span>
       </button>
-      <h2 className={'settings__heading'}>Settings</h2>
-      <h3 className={'settings__subHeading'}>Time (minutes)</h3>
-      <form className={'settings__form'} onSubmit={handleApply}>
-        <div className={'time'}>
+      <h2 className={styles.heading}>Settings</h2>
+      <h3 className={styles.subHeading}>Time (minutes)</h3>
+      <form className={styles.form} onSubmit={handleApply}>
+        <div className={styles.time}>
           {Object.entries(state.timers).map(([label, time]) => (
             <NumberInput
               key={label}
@@ -82,12 +82,12 @@ export default function SettingsModal({
           ))}
         </div>
 
-        <div className="colors">
-          <h3 className="settings__subHeading">Color</h3>
-          <div className="colors__inputs">
+        <div className={styles.colors}>
+          <h3 className={styles.subHeading}>Color</h3>
+          <div className={styles.colorsInputs}>
             {settings.colors.map(({ label, value }) => (
-              <label className="radio" key={label}>
-                <span className="radio__input">
+              <label className={styles.radio} key={label}>
+                <span className={styles.radioInput}>
                   <input
                     type="radio"
                     name="color"
@@ -96,7 +96,7 @@ export default function SettingsModal({
                     onChange={handleChangeColor}
                   />
                   <span
-                    className="radio__control"
+                    className={styles.radioControl}
                     style={{ backgroundColor: value }}
                   >
                     <svg
@@ -121,7 +121,7 @@ export default function SettingsModal({
           </div>
         </div>
 
-        <button className={'settings__submit'} type="submit">
+        <button className={styles.submit} type="submit">
           Apply
         </button>
       </form>
