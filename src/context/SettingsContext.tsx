@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import { getFromStrorage, setToStorage } from '../utils';
 
 let root = document.documentElement;
@@ -8,15 +8,11 @@ type TimerType = {
   time: number;
 };
 
-export type Color = {
-  label: string;
-  value: string;
-  checked: boolean;
-};
+export type Colors = '#f67174' | '#75f3f7' | '#d880f5';
 
 type Settings = {
   timers: TimerType[];
-  colors: Color[];
+  selectedColor: Colors;
 };
 
 type ACTIONTYPE = {
@@ -27,17 +23,13 @@ type ACTIONTYPE = {
   };
 };
 
-const initialState = {
+const initialState: Settings = {
   timers: [
     { label: 'pomodoro', time: 1500 },
     { label: 'short break', time: 300 },
     { label: 'long break', time: 600 },
   ],
-  colors: [
-    { label: 'red', value: '#f67174', checked: true },
-    { label: 'blue', value: '#75f3f7', checked: false },
-    { label: 'purple', value: '#d880f5', checked: false },
-  ],
+  selectedColor: '#f67174',
 };
 
 function getInitialState() {
@@ -47,22 +39,18 @@ function getInitialState() {
 function reducer(state: typeof initialState, action: ACTIONTYPE) {
   switch (action.type) {
     case 'updateSettings':
-      const { selectedColor, ...rest } = action.payload;
+      const { selectedColor, timers } = action.payload;
 
-      const updatedSetting = {
+      const updatedSetting: Settings = {
         ...state,
-        timers: Object.entries(rest.timers).map(([label, value]) => ({
+        timers: Object.entries(timers).map(([label, value]) => ({
           label,
           time: Number(value) * 60,
         })),
-        colors: state.colors.map(color => ({
-          ...color,
-          checked: color.value === selectedColor,
-        })),
+        selectedColor: selectedColor as Colors,
       };
       setToStorage('settings', updatedSetting);
 
-      root.style.setProperty('--color-main', selectedColor);
       return updatedSetting;
 
     default:
@@ -79,6 +67,10 @@ interface SettingsProviderProps {
 
 function SettingsProvider({ children }: SettingsProviderProps): JSX.Element {
   const [settings, dispatch] = useReducer(reducer, getInitialState());
+
+  useEffect(() => {
+    root.style.setProperty('--color-main', settings.selectedColor);
+  }, [settings.selectedColor]);
 
   return (
     <SettingsContext.Provider value={[settings, dispatch]}>

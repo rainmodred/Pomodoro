@@ -17,9 +17,7 @@ export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
   const { status, currentTime, toggle, reset } = useTimer(time);
 
   const [progress, setProgress] = useState(100);
-  const [{ colors }] = useSettings();
-
-  const selectedColor = colors.find(color => color.checked)?.value as string;
+  const [{ selectedColor }] = useSettings();
 
   useEffect(() => {
     setProgress(100);
