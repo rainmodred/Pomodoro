@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 
 import '@reach/dialog/styles.css';
@@ -25,7 +25,7 @@ export default function Pomodoro(): JSX.Element {
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Pomodoro</h1>
-      <Tabs tabIndex={tabIndex} onChange={handleTabsChange}>
+      <Tabs index={tabIndex} onChange={handleTabsChange}>
         <TabList>
           {timers.map(({ label }) => (
             <Tab key={label}>{label}</Tab>
@@ -35,7 +35,7 @@ export default function Pomodoro(): JSX.Element {
         <TabPanels>
           {timers.map(({ label, time }, index) => (
             <TabPanel key={index}>
-              <Timer id={label} time={time} tabIndex={tabIndex} />
+              <Timer id={label} time={time} index={index} tabIndex={tabIndex} />
             </TabPanel>
           ))}
         </TabPanels>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 
 import Clock from '../Clock/Clock';
@@ -10,14 +10,34 @@ import useTimer from './useTimer';
 interface TimerProps {
   id: string;
   time: number;
+  index: number;
   tabIndex: number;
 }
 
-export default function Timer({ id, time, tabIndex }: TimerProps): JSX.Element {
+export default function Timer({
+  id,
+  time,
+  index,
+  tabIndex,
+}: TimerProps): JSX.Element {
   const { status, currentTime, toggle, reset } = useTimer(time);
 
   const [progress, setProgress] = useState(100);
   const [{ selectedColor }] = useSettings();
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.code === 'Space') {
+        toggle();
+      }
+    }
+
+    if (index === tabIndex) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [index, tabIndex, toggle]);
 
   useEffect(() => {
     setProgress(100);
