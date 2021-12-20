@@ -31,7 +31,6 @@ describe('Timer', () => {
     userEvent.click(startButton);
     expect(screen.queryByText(/start/i)).not.toBeInTheDocument();
 
-    const pause = screen.getByText(/pause/i);
     expect(screen.getByText(/pause/i)).toBeInTheDocument();
     userEvent.click(startButton);
     expect(screen.queryByText(/pause/i)).not.toBeInTheDocument();
@@ -46,7 +45,6 @@ describe('Timer', () => {
       jest.advanceTimersByTime(60000);
     });
 
-    expect(setInterval).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('meow-clock')).toHaveTextContent('24:00');
   });
 
@@ -75,5 +73,17 @@ describe('Timer', () => {
     });
 
     expect(screen.getByTestId('meow-start')).toBeDisabled();
+  });
+
+  it('should stop timer on time end', () => {
+    render(<Timer id="meow" tabIndex={0} time={1} />, { wrapper });
+
+    userEvent.click(screen.getByTestId('meow-start'));
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+
+    expect(screen.getByTestId('meow-clock')).toHaveTextContent('00:00');
   });
 });

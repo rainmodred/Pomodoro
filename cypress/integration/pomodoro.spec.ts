@@ -63,6 +63,7 @@ describe('pomodoro app', () => {
       .clear()
       .type(10);
 
+    cy.findByTestId('#d880f5').click();
     cy.findByRole('button', {
       name: /apply/i,
     })
@@ -85,23 +86,7 @@ describe('pomodoro app', () => {
               time: 600,
             },
           ],
-          colors: [
-            {
-              label: 'red',
-              value: '#f67174',
-              checked: true,
-            },
-            {
-              label: 'blue',
-              value: '#75f3f7',
-              checked: false,
-            },
-            {
-              label: 'purple',
-              value: '#d880f5',
-              checked: false,
-            },
-          ],
+          selectedColor: '#d880f5',
         });
       });
     cy.findByTestId('pomodoro-clock').should('have.text', '30:00');

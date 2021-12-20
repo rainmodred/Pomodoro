@@ -5,7 +5,7 @@ import { useSettings } from '../../context/SettingsContext';
 
 import NumberInput from '../NumberInput/NumberInput';
 
-import './SettingsModal.css';
+import styles from './SettingsModal.module.css';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -18,59 +18,64 @@ export default function SettingsModal({
 }: SettingsModalProps): JSX.Element {
   const [settings, dispatch] = useSettings();
 
-  const [state, setState] = useState(() => {
-    const res = { timers: {} } as {
-      timers: Record<string, string>;
-      selectedColor: string;
-    };
+  const [timers, setTimers] = useState(
+    settings.timers.reduce<Record<string, string>>((prev, curr) => {
+      prev[curr.label] = (curr.time / 60).toString();
+      return prev;
+    }, {}),
+  );
 
-    settings.timers.forEach(
-      ({ label, time }) => (res.timers[label] = (time / 60).toString()),
-    );
-
-    const color = settings.colors.find(color => color.checked);
-    if (color) {
-      res.selectedColor = color.value;
-    }
-    return res;
-  });
+  const [colors, setColors] = useState(
+    [
+      { name: 'red', value: '#f67174', checked: false },
+      { name: 'blue', value: '#75f3f7', checked: false },
+      { name: 'purple', value: '#d880f5', checked: false },
+    ].map(color =>
+      color.value === settings.selectedColor
+        ? { ...color, checked: true }
+        : color,
+    ),
+  );
 
   function handleApply(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch({ type: 'updateSettings', payload: state });
+    const selectedColor = colors.find(color => color.checked)?.value;
+    if (selectedColor) {
+      dispatch({
+        type: 'updateSettings',
+        payload: { timers, selectedColor },
+      });
+    }
 
     close();
   }
 
   function handleTimerChange(label: string, value: string) {
-    setState({
-      ...state,
-      timers: {
-        ...state.timers,
-        [label]: value,
-      },
-    });
+    setTimers({ ...timers, [label]: value });
   }
 
   function handleChangeColor(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log(e.target.value);
-    setState({
-      ...state,
-      selectedColor: e.target.value,
-    });
+    const selectedColor = e.target.value;
+    setColors(
+      colors.map(color =>
+        color.value === selectedColor
+          ? { ...color, checked: true }
+          : { ...color, checked: false },
+      ),
+    );
   }
 
   return (
     <Dialog isOpen={isOpen} onDismiss={close} aria-label="settings">
-      <button className="close-button" onClick={close}>
+      <button className={styles.close} onClick={close}>
         <VisuallyHidden>Close</VisuallyHidden>
         <span aria-hidden>×</span>
       </button>
-      <h2 className={'settings__heading'}>Settings</h2>
-      <h3 className={'settings__subHeading'}>Time (minutes)</h3>
-      <form className={'settings__form'} onSubmit={handleApply}>
-        <div className={'time'}>
-          {Object.entries(state.timers).map(([label, time]) => (
+      <h2 className={styles.heading}>Settings</h2>
+      <h3 className={styles.subHeading}>Time (minutes)</h3>
+      <form className={styles.form} onSubmit={handleApply}>
+        <div className={styles.time}>
+          {Object.entries(timers).map(([label, time]) => (
             <NumberInput
               key={label}
               label={label}
@@ -82,21 +87,21 @@ export default function SettingsModal({
           ))}
         </div>
 
-        <div className="colors">
-          <h3 className="settings__subHeading">Color</h3>
-          <div className="colors__inputs">
-            {settings.colors.map(({ label, value }) => (
-              <label className="radio" key={label}>
-                <span className="radio__input">
+        <div className={styles.colors}>
+          <h3 className={styles.subHeading}>Color</h3>
+          <div className={styles.colorsInputs} role="radiogroup">
+            {colors.map(({ name, value, checked }) => (
+              <label className={styles.radio} key={name} data-testid={value}>
+                <span className={styles.radioInput}>
                   <input
                     type="radio"
                     name="color"
                     value={value}
-                    checked={value === state.selectedColor}
+                    checked={checked}
                     onChange={handleChangeColor}
                   />
                   <span
-                    className="radio__control"
+                    className={styles.radioControl}
                     style={{ backgroundColor: value }}
                   >
                     <svg
@@ -121,7 +126,7 @@ export default function SettingsModal({
           </div>
         </div>
 
-        <button className={'settings__submit'} type="submit">
+        <button className={styles.submit} type="submit">
           Apply
         </button>
       </form>
