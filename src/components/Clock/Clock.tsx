@@ -6,10 +6,11 @@ interface ClockProps {
 }
 
 function timeToMinSec(time: number) {
-  const [minutes, seconds] = new Date(time * 1000)
-    .toISOString()
-    .slice(14, 19)
-    .split(':');
+  const minutesNumber = Math.floor(time / 60);
+  const secondsNumber = time % 60;
+
+  const minutes = minutesNumber < 10 ? `0${minutesNumber}` : minutesNumber;
+  const seconds = secondsNumber < 10 ? `0${secondsNumber}` : secondsNumber;
 
   return (
     <>
