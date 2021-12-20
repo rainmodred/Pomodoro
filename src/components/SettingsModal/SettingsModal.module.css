@@ -4,6 +4,8 @@
   right: 30px;
   padding: 5px;
   font-size: 150%;
+  cursor: pointer;
+  z-index: 1;
 }
 
 .heading {
