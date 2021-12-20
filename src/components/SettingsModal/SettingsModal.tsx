@@ -89,9 +89,9 @@ export default function SettingsModal({
 
         <div className={styles.colors}>
           <h3 className={styles.subHeading}>Color</h3>
-          <div className={styles.colorsInputs}>
+          <div className={styles.colorsInputs} role="radiogroup">
             {colors.map(({ name, value, checked }) => (
-              <label className={styles.radio} key={name}>
+              <label className={styles.radio} key={name} data-testid={value}>
                 <span className={styles.radioInput}>
                   <input
                     type="radio"
