@@ -45,7 +45,6 @@ describe('Timer', () => {
       jest.advanceTimersByTime(60000);
     });
 
-    expect(setInterval).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('meow-clock')).toHaveTextContent('24:00');
   });
 

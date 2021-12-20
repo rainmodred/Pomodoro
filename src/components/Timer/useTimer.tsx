@@ -23,17 +23,14 @@ export default function useTimer(initialTime: number) {
       window.clearInterval(timerId.current);
     }
 
+    if (currentTime === 0) {
+      setStatus(Status.Paused);
+    }
+
     return () => {
       window.clearInterval(timerId.current);
     };
-  }, [status]);
-
-  useEffect(() => {
-    if (currentTime === 0) {
-      window.clearInterval(timerId.current);
-      setStatus(Status.Paused);
-    }
-  }, [currentTime]);
+  }, [status, currentTime]);
 
   function toggle() {
     if (status === Status.Paused && currentTime > 0) {
