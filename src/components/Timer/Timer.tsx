@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 
 import Clock from '../Clock/Clock';

@@ -1,7 +1,7 @@
 import { Dialog } from '@reach/dialog';
 import VisuallyHidden from '@reach/visually-hidden';
 import { useState } from 'react';
-import { Colors, useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/SettingsContext';
 
 import NumberInput from '../NumberInput/NumberInput';
 
