@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
+import { useEffect, useState } from 'react';
 
 import '@reach/dialog/styles.css';
 import '@reach/tabs/styles.css';
@@ -9,37 +8,65 @@ import SettingsModal from '../SettingsModal/SettingsModal';
 
 import styles from './Pomodoro.module.css';
 import { useSettings } from '../../context/SettingsContext';
+import useTimer from './useTimer';
 
 export default function Pomodoro(): JSX.Element {
   const [{ timers }] = useSettings();
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const selectedTimer = timers[selectedTabIndex];
 
-  const [tabIndex, setTabIndex] = useState(0);
+  const { statusText, currentTime, toggle, reset } = useTimer(
+    selectedTimer.time,
+  );
+
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
 
   function handleTabsChange(index: number) {
-    setTabIndex(index);
+    setSelectedTabIndex(index);
   }
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.code === 'Space' && e.target === document.body) {
+        toggle();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [toggle]);
 
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Pomodoro</h1>
-      <Tabs index={tabIndex} onChange={handleTabsChange}>
-        <TabList>
-          {timers.map(({ label }) => (
-            <Tab key={label}>{label}</Tab>
-          ))}
-        </TabList>
 
-        <TabPanels>
-          {timers.map(({ label, time }, index) => (
-            <TabPanel key={index}>
-              <Timer id={label} time={time} index={index} tabIndex={tabIndex} />
-            </TabPanel>
+      <div>
+        <div className={styles.tabList}>
+          {timers.map(({ label }, tabIndex) => (
+            <button
+              className={`${styles.tab} ${
+                tabIndex === selectedTabIndex && styles.selectedTab
+              }`}
+              key={label}
+              onClick={() => handleTabsChange(tabIndex)}
+            >
+              {label}
+            </button>
           ))}
-        </TabPanels>
-      </Tabs>
+        </div>
+        <div className={styles.tabPanel}>
+          <Timer
+            statusText={statusText}
+            initialTime={selectedTimer.time}
+            currentTime={currentTime}
+            toggle={toggle}
+            reset={reset}
+          />
+        </div>
+      </div>
 
       <div className={styles.footer}>
         <button onClick={open} data-testid="settings">

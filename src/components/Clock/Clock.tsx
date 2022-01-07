@@ -1,7 +1,7 @@
 import styles from './Clock.module.css';
 
 interface ClockProps {
-  id: string;
+  id?: string;
   time: number;
 }
 

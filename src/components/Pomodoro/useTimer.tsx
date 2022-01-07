@@ -5,11 +5,24 @@ enum Status {
   Paused = 'PAUSED',
 }
 
-export default function useTimer(initialTime: number) {
+export type StatusText = 'pause' | 'start';
+
+interface UseTimerType {
+  statusText: StatusText;
+  currentTime: number;
+  toggle: () => void;
+  reset: () => void;
+}
+
+export default function useTimer(initialTime: number): UseTimerType {
   const [status, setStatus] = useState(Status.Paused);
   const [currentTime, setCurrentTime] = useState(initialTime);
 
   const timerId = useRef(0);
+
+  useEffect(() => {
+    setCurrentTime(initialTime);
+  }, [initialTime]);
 
   useEffect(() => {
     if (status === Status.Started) {
@@ -32,15 +45,16 @@ export default function useTimer(initialTime: number) {
     };
   }, [status, currentTime]);
 
-  function toggle() {
-    if (status === Status.Paused && currentTime > 0) {
-      setStatus(Status.Started);
+  const toggle = useCallback(() => {
+    if (currentTime < 1) {
+      return;
     }
-
-    if (status === Status.Started) {
+    if (status === Status.Paused) {
+      setStatus(Status.Started);
+    } else {
       setStatus(Status.Paused);
     }
-  }
+  }, [status, currentTime]);
 
   const reset = useCallback(() => {
     window.clearInterval(timerId.current);
@@ -49,7 +63,7 @@ export default function useTimer(initialTime: number) {
   }, [initialTime]);
 
   return {
-    status: status === Status.Started ? 'pause' : 'start',
+    statusText: status === Status.Started ? 'pause' : 'start',
     currentTime,
     toggle,
     reset,
