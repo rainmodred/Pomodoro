@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import '@reach/dialog/styles.css';
-import '@reach/tabs/styles.css';
 
 import Timer from '../Timer/Timer';
 import SettingsModal from '../SettingsModal/SettingsModal';

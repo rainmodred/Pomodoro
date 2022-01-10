@@ -22,35 +22,6 @@ button {
   color: inherit;
 }
 
-/* Reach Tabs */
-
-[data-reach-tab-list] {
-  background-color: var(--colorl-light-bg);
-  border-radius: 40px;
-  padding: 5px;
-  gap: 5px;
-}
-
-[data-reach-tab] {
-  font-size: 0.75rem;
-  font-weight: bold;
-  padding: 5px 10px;
-}
-
-[data-reach-tab][data-selected] {
-  background-color: var(--color-main);
-  color: var(--color-bg);
-  border-radius: 40px;
-}
-
-[data-reach-tab-panels] {
-  height: 100%;
-}
-
-[data-reach-tab-panel] {
-  height: 100%;
-}
-
 [data-reach-dialog-content] {
   border-radius: 20px;
   color: var(--color-bg);
