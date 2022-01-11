@@ -72,7 +72,7 @@ export default function SettingsModal({
         <span aria-hidden>×</span>
       </button>
       <h2 className={styles.heading}>Settings</h2>
-      <h3 className={styles.subHeading}>Time (minutes)</h3>
+      <span className={styles.subHeading}>Time (minutes)</span>
       <form className={styles.form} onSubmit={handleApply}>
         <div className={styles.time}>
           {Object.entries(timers).map(([label, time]) => (
@@ -88,7 +88,7 @@ export default function SettingsModal({
         </div>
 
         <div className={styles.colors}>
-          <h3 className={styles.subHeading}>Color</h3>
+          <span className={styles.subHeading}>Color</span>
           <div className={styles.colorsInputs} role="radiogroup">
             {colors.map(({ name, value, checked }) => (
               <label className={styles.radio} key={name} data-testid={value}>
