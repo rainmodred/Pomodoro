@@ -1,58 +1,58 @@
+.breakLine {
+  border-color: rgb(221, 218, 218);
+  opacity: 0.4;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
 .close {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  padding: 5px;
-  font-size: 150%;
-  cursor: pointer;
-  z-index: 1;
+  font-size: 2rem;
 }
 
 .heading {
   font-size: 1.25rem;
-  padding: 10px 0;
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.heading::after {
-  position: absolute;
-  left: 0;
-  content: '';
-  display: block;
-  width: 100%;
-  height: 2px;
-  background-color: rgb(221, 218, 218);
-  bottom: -10px;
 }
 
 .subHeading {
   font-size: 0.875rem;
   text-transform: uppercase;
   padding: 10px 0;
+  font-weight: bold;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
-.time {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.settingsItem {
+  padding: 1rem 0;
   position: relative;
 }
 
-.time::after {
+.settingsItem:not(:last-child):after {
   position: absolute;
   content: '';
   display: block;
   width: 100%;
   height: 2px;
+  bottom: 0;
   background-color: rgb(221, 218, 218);
-  bottom: -20px;
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.time > * {
+  flex-basis: 100px;
 }
 
 .submit {

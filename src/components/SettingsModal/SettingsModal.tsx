@@ -67,64 +67,76 @@ export default function SettingsModal({
 
   return (
     <Dialog isOpen={isOpen} onDismiss={close} aria-label="settings">
-      <button className={styles.close} onClick={close}>
-        <VisuallyHidden>Close</VisuallyHidden>
-        <span aria-hidden>×</span>
-      </button>
-      <h2 className={styles.heading}>Settings</h2>
-      <span className={styles.subHeading}>Time (minutes)</span>
+      <div className={styles.header}>
+        <h2 className={styles.heading}>Settings</h2>
+        <button className={styles.close} onClick={close}>
+          <VisuallyHidden>Close</VisuallyHidden>
+          <span aria-hidden>×</span>
+        </button>
+      </div>
+      <hr className={styles.breakLine} />
       <form className={styles.form} onSubmit={handleApply}>
-        <div className={styles.time}>
-          {Object.entries(timers).map(([label, time]) => (
-            <NumberInput
-              key={label}
-              label={label}
-              max={90}
-              min={1}
-              value={time}
-              onChange={handleTimerChange}
-            />
-          ))}
-        </div>
-
-        <div className={styles.colors}>
-          <span className={styles.subHeading}>Color</span>
-          <div className={styles.colorsInputs} role="radiogroup">
-            {colors.map(({ name, value, checked }) => (
-              <label className={styles.radio} key={name} data-testid={value}>
-                <span className={styles.radioInput}>
-                  <input
-                    type="radio"
-                    name="color"
-                    value={value}
-                    checked={checked}
-                    onChange={handleChangeColor}
-                  />
-                  <span
-                    className={styles.radioControl}
-                    style={{ backgroundColor: value }}
+        <ul>
+          <li className={styles.settingsItem}>
+            <span className={styles.subHeading}>Time (minutes)</span>
+            <div className={styles.time}>
+              {Object.entries(timers).map(([label, time]) => (
+                <NumberInput
+                  key={label}
+                  label={label}
+                  max={90}
+                  min={1}
+                  value={time}
+                  onChange={handleTimerChange}
+                />
+              ))}
+            </div>
+          </li>
+          <li className={styles.settingsItem}>
+            <div className={styles.colors}>
+              <span className={styles.subHeading}>Color</span>
+              <div className={styles.colorsInputs} role="radiogroup">
+                {colors.map(({ name, value, checked }) => (
+                  <label
+                    className={styles.radio}
+                    key={name}
+                    data-testid={value}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon icon-tabler icon-tabler-check"
-                      width="18"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2"
-                      stroke="#171931"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M5 12l5 5l10 -10" />
-                    </svg>
-                  </span>
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
+                    <span className={styles.radioInput}>
+                      <input
+                        type="radio"
+                        name="color"
+                        value={value}
+                        checked={checked}
+                        onChange={handleChangeColor}
+                      />
+                      <span
+                        className={styles.radioControl}
+                        style={{ backgroundColor: value }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon icon-tabler icon-tabler-check"
+                          width="18"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="#171931"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M5 12l5 5l10 -10" />
+                        </svg>
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </li>
+        </ul>
 
         <button className={styles.submit} type="submit">
           Apply
