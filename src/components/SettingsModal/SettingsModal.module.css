@@ -57,9 +57,9 @@
 
 .submit {
   position: absolute;
-  bottom: -8%;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 20%;
+  bottom: 0;
+  transform: translateY(50%);
   background-color: var(--color-main);
   color: white;
   padding: 5px 15px;
@@ -70,7 +70,7 @@
 }
 
 .submit:hover {
-  background-color: #f06264;
+  transform: rotate(5deg);
 }
 
 .submit:focus {
