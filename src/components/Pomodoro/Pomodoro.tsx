@@ -1,21 +1,30 @@
-import { useEffect, useState } from 'react';
-
+import { useCallback, useEffect, useState } from 'react';
 import '@reach/dialog/styles.css';
 
-import Timer from '../Timer/Timer';
+import { useSettings } from '../../context/SettingsContext';
 import SettingsModal from '../SettingsModal/SettingsModal';
+import useTimer from './useTimer';
+import useSound from './useSound';
+import Timer from '../Timer/Timer';
+import { sounds } from '../../constants';
 
 import styles from './Pomodoro.module.css';
-import { useSettings } from '../../context/SettingsContext';
-import useTimer from './useTimer';
 
 export default function Pomodoro(): JSX.Element {
-  const [{ timers }] = useSettings();
+  const [{ timers, selectedSound, volume }] = useSettings();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const selectedTimer = timers[selectedTabIndex];
 
+  const soundSrc = `${sounds[selectedSound]}`;
+  const { play } = useSound(soundSrc, {
+    volume,
+    duration: 2000,
+  });
+
+  const onTimeEnd = useCallback(() => play(), [play]);
   const { statusText, currentTime, toggle, reset } = useTimer(
     selectedTimer.time,
+    onTimeEnd,
   );
 
   const [showDialog, setShowDialog] = useState(false);
@@ -41,7 +50,6 @@ export default function Pomodoro(): JSX.Element {
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Pomodoro</h1>
-
       <div>
         <div className={styles.tabList}>
           {timers.map(({ label }, tabIndex) => (

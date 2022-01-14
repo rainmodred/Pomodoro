@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
 import { getFromStrorage, setToStorage } from '../utils';
+import { Colors, Sounds } from '../constants';
 
 let root = document.documentElement;
 
@@ -8,20 +9,27 @@ type TimerType = {
   time: number;
 };
 
-export type Colors = '#f67174' | '#75f3f7' | '#d880f5';
-
 type Settings = {
   timers: TimerType[];
   selectedColor: Colors;
+  volume: number;
+  selectedSound: Sounds;
 };
 
-type ACTIONTYPE = {
-  type: 'updateSettings';
-  payload: {
-    timers: Record<string, string>;
-    selectedColor: string;
-  };
-};
+type ACTIONTYPE =
+  | {
+      type: 'updateSettings';
+      payload: {
+        timers: Record<string, string>;
+        selectedColor: string;
+      };
+    }
+  | { type: 'updateSound'; payload: Sounds }
+  | { type: 'updateVolume'; payload: number }
+  | {
+      type: 'updateColor';
+      payload: Colors;
+    };
 
 const initialState: Settings = {
   timers: [
@@ -30,6 +38,8 @@ const initialState: Settings = {
     { label: 'long break', time: 600 },
   ],
   selectedColor: '#f67174',
+  volume: 50,
+  selectedSound: 'Analog Alarm',
 };
 
 function getInitialState() {
@@ -37,22 +47,37 @@ function getInitialState() {
 }
 
 function reducer(state: typeof initialState, action: ACTIONTYPE) {
+  let updatedSettings: Settings | null = null;
+
   switch (action.type) {
-    case 'updateSettings':
-      const { selectedColor, timers } = action.payload;
-
-      const updatedSetting: Settings = {
+    case 'updateColor':
+      const color = action.payload;
+      updatedSettings = {
         ...state,
-        timers: Object.entries(timers).map(([label, value]) => ({
-          label,
-          time: Number(value) * 60,
-        })),
-        selectedColor: selectedColor as Colors,
+        selectedColor: color,
       };
-      setToStorage('settings', updatedSetting);
+      setToStorage('settings', updatedSettings);
 
-      return updatedSetting;
+      return updatedSettings;
 
+    case 'updateSound':
+      const sound = action.payload;
+      updatedSettings = {
+        ...state,
+        selectedSound: sound,
+      };
+      setToStorage('settings', updatedSettings);
+
+      return updatedSettings;
+    case 'updateVolume':
+      const volume = action.payload;
+      updatedSettings = {
+        ...state,
+        volume,
+      };
+      setToStorage('settings', updatedSettings);
+
+      return updatedSettings;
     default:
       throw new Error();
   }

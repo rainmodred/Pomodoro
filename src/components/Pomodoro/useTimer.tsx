@@ -14,7 +14,10 @@ interface UseTimerType {
   reset: () => void;
 }
 
-export default function useTimer(initialTime: number): UseTimerType {
+export default function useTimer(
+  initialTime: number,
+  onTimeEnd: () => void,
+): UseTimerType {
   const [status, setStatus] = useState(Status.Paused);
   const [currentTime, setCurrentTime] = useState(initialTime);
 
@@ -38,12 +41,13 @@ export default function useTimer(initialTime: number): UseTimerType {
 
     if (currentTime === 0) {
       setStatus(Status.Paused);
+      onTimeEnd();
     }
 
     return () => {
       window.clearInterval(timerId.current);
     };
-  }, [status, currentTime]);
+  }, [status, currentTime, onTimeEnd]);
 
   const toggle = useCallback(() => {
     if (currentTime < 1) {
