@@ -25,6 +25,8 @@ export default function useTimer(
 
   useEffect(() => {
     setCurrentTime(initialTime);
+    setStatus(Status.Paused);
+    window.clearInterval(timerId.current);
   }, [initialTime]);
 
   useEffect(() => {

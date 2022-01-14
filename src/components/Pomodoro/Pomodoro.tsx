@@ -55,7 +55,7 @@ export default function Pomodoro(): JSX.Element {
           {timers.map(({ label }, tabIndex) => (
             <button
               className={`${styles.tab} ${
-                tabIndex === selectedTabIndex && styles.selectedTab
+                tabIndex === selectedTabIndex ? styles.selectedTab : ''
               }`}
               key={label}
               onClick={() => handleTabsChange(tabIndex)}

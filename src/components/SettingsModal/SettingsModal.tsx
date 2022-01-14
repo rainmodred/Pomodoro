@@ -46,6 +46,14 @@ export default function SettingsModal({
 
   function handleApply(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    dispatch({
+      type: 'updateTimers',
+      payload: Object.entries(timers).map(([label, value]) => ({
+        label,
+        time: Number(value) * 60,
+      })),
+    });
+
     const selectedColor = colors.find(color => color.checked)?.value as Colors;
     if (selectedColor !== settings.selectedColor) {
       dispatch({

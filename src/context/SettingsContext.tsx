@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { getFromStrorage, setToStorage } from '../utils';
+import { getFromStrorage, setToStorage } from '../utils/utils';
 import { Colors, Sounds } from '../constants';
 
 let root = document.documentElement;
@@ -29,6 +29,10 @@ type ACTIONTYPE =
   | {
       type: 'updateColor';
       payload: Colors;
+    }
+  | {
+      type: 'updateTimers';
+      payload: TimerType[];
     };
 
 const initialState: Settings = {
@@ -50,6 +54,14 @@ function reducer(state: typeof initialState, action: ACTIONTYPE) {
   let updatedSettings: Settings | null = null;
 
   switch (action.type) {
+    case 'updateTimers':
+      const timers = action.payload;
+      updatedSettings = {
+        ...state,
+        timers,
+      };
+      setToStorage('settings', updatedSettings);
+      return updatedSettings;
     case 'updateColor':
       const color = action.payload;
       updatedSettings = {
