@@ -41,7 +41,7 @@ export default function useTimer(
       window.clearInterval(timerId.current);
     }
 
-    if (currentTime === 0) {
+    if (status === Status.Started && currentTime === 0) {
       setStatus(Status.Paused);
       onTimeEnd();
     }

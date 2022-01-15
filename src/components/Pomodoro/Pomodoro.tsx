@@ -21,27 +21,50 @@ export default function Pomodoro(): JSX.Element {
     duration: 2000,
   });
 
+  const [pomodoroCounter, setPomodoroCounter] = useState(0);
+
   const onTimeEnd = useCallback(() => {
     play();
-    debugger;
+    // debugger;
+    // console.log('meow', selectedTabIndex);
+    // console.log('pomodoroCounter', pomodoroCounter);
+
     if (autostart) {
-      if (selectedTabIndex === 2) {
-        return;
-      }
       if (selectedTabIndex === 0) {
-        setSelectedTabIndex(1);
+        setPomodoroCounter(pomodoroCounter => pomodoroCounter + 1);
         return;
       }
-      if (selectedTabIndex === 1) {
-        setSelectedTabIndex(0);
-        return;
-      }
+
+      // if (selectedTabIndex === 2) {
+      //   return;
+      // }
+      // if (selectedTabIndex === 0) {
+      //   setSelectedTabIndex(1);
+      //   return;
+      // }
+      // if (selectedTabIndex === 1) {
+      //   setSelectedTabIndex(0);
+      //   return;
+      // }
     }
   }, [play, autostart, selectedTabIndex]);
+  console.log('pomodoroCounter', pomodoroCounter);
+
   const { statusText, currentTime, toggle, reset } = useTimer(
     selectedTimer.time,
     onTimeEnd,
   );
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      if (pomodoroCounter === 1) {
+        setSelectedTabIndex(1);
+        toggle();
+      }
+    }, 1000);
+
+    return () => window.clearTimeout(id);
+  }, [pomodoroCounter, toggle]);
 
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
