@@ -14,6 +14,7 @@ type Settings = {
   selectedColor: Colors;
   volume: number;
   selectedSound: Sounds;
+  autostart: true;
 };
 
 type ACTIONTYPE =
@@ -44,6 +45,7 @@ const initialState: Settings = {
   selectedColor: '#f67174',
   volume: 50,
   selectedSound: 'Analog Alarm',
+  autostart: true,
 };
 
 function getInitialState() {

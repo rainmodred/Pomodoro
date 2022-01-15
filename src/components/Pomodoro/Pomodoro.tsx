@@ -11,7 +11,7 @@ import { sounds } from '../../constants';
 import styles from './Pomodoro.module.css';
 
 export default function Pomodoro(): JSX.Element {
-  const [{ timers, selectedSound, volume }] = useSettings();
+  const [{ timers, selectedSound, volume, autostart }] = useSettings();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const selectedTimer = timers[selectedTabIndex];
 
@@ -21,7 +21,23 @@ export default function Pomodoro(): JSX.Element {
     duration: 2000,
   });
 
-  const onTimeEnd = useCallback(() => play(), [play]);
+  const onTimeEnd = useCallback(() => {
+    play();
+    debugger;
+    if (autostart) {
+      if (selectedTabIndex === 2) {
+        return;
+      }
+      if (selectedTabIndex === 0) {
+        setSelectedTabIndex(1);
+        return;
+      }
+      if (selectedTabIndex === 1) {
+        setSelectedTabIndex(0);
+        return;
+      }
+    }
+  }, [play, autostart, selectedTabIndex]);
   const { statusText, currentTime, toggle, reset } = useTimer(
     selectedTimer.time,
     onTimeEnd,
