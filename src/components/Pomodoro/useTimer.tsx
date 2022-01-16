@@ -10,12 +10,15 @@ export type StatusText = 'pause' | 'start';
 interface UseTimerType {
   statusText: StatusText;
   currentTime: number;
+
   toggle: () => void;
   reset: () => void;
 }
 
 export default function useTimer(
   initialTime: number,
+  autoplay: boolean,
+  autostart: boolean,
   onTimeEnd: () => void,
 ): UseTimerType {
   const [status, setStatus] = useState(Status.Paused);
@@ -25,7 +28,12 @@ export default function useTimer(
 
   useEffect(() => {
     setCurrentTime(initialTime);
-  }, [initialTime]);
+    if (autoplay && autostart) {
+      setStatus(Status.Started);
+    } else {
+      setStatus(Status.Paused);
+    }
+  }, [initialTime, autoplay, autostart]);
 
   useEffect(() => {
     if (status === Status.Started) {
@@ -39,7 +47,7 @@ export default function useTimer(
       window.clearInterval(timerId.current);
     }
 
-    if (currentTime === 0) {
+    if (status === Status.Started && currentTime === 0) {
       setStatus(Status.Paused);
       onTimeEnd();
     }

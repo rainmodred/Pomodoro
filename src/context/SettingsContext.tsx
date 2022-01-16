@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { getFromStrorage, setToStorage } from '../utils';
+import { getFromStrorage, setToStorage } from '../utils/utils';
 import { Colors, Sounds } from '../constants';
 
 let root = document.documentElement;
@@ -14,6 +14,7 @@ type Settings = {
   selectedColor: Colors;
   volume: number;
   selectedSound: Sounds;
+  autostart: boolean;
 };
 
 type ACTIONTYPE =
@@ -26,6 +27,10 @@ type ACTIONTYPE =
   | {
       type: 'updateTimers';
       payload: TimerType[];
+    }
+  | {
+      type: 'updateAutostart';
+      payload: boolean;
     };
 
 const initialState: Settings = {
@@ -37,6 +42,7 @@ const initialState: Settings = {
   selectedColor: '#f67174',
   volume: 50,
   selectedSound: 'Analog Alarm',
+  autostart: true,
 };
 
 function getInitialState() {
@@ -83,6 +89,16 @@ function reducer(state: typeof initialState, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
+    case 'updateAutostart':
+      const autostart = action.payload;
+      updatedSettings = {
+        ...state,
+        autostart,
+      };
+      setToStorage('settings', updatedSettings);
+
+      return updatedSettings;
+
     default:
       throw new Error();
   }

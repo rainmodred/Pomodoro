@@ -144,3 +144,8 @@
 .soundSelect {
   font-size: 0.875rem;
 }
+
+.autoStartWrapper {
+  display: flex;
+  justify-content: space-between;
+}

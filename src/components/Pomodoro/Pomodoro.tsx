@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import '@reach/dialog/styles.css';
 
 import { useSettings } from '../../context/SettingsContext';
@@ -11,9 +11,13 @@ import { sounds } from '../../constants';
 import styles from './Pomodoro.module.css';
 
 export default function Pomodoro(): JSX.Element {
-  const [{ timers, selectedSound, volume }] = useSettings();
+  const [{ timers, selectedSound, volume, autostart }] = useSettings();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const selectedTimer = timers[selectedTabIndex];
+
+  const pomoroCounter = useRef(0);
+  //if true will autoStart next timer
+  const [autoplay, setAutoplay] = useState(false);
 
   const soundSrc = `${sounds[selectedSound]}`;
   const { play } = useSound(soundSrc, {
@@ -21,9 +25,45 @@ export default function Pomodoro(): JSX.Element {
     duration: 2000,
   });
 
-  const onTimeEnd = useCallback(() => play(), [play]);
+  //work, short break, work, long break
+  const startNextTimer = useCallback(() => {
+    pomoroCounter.current++;
+
+    if (selectedTabIndex === 1) {
+      setSelectedTabIndex(0);
+      return;
+    }
+
+    if (selectedTabIndex === 0 && pomoroCounter.current === 1) {
+      setSelectedTabIndex(1);
+      return;
+    }
+
+    if (selectedTabIndex === 0 && pomoroCounter.current === 3) {
+      setSelectedTabIndex(2);
+      return;
+    }
+
+    if (selectedTabIndex === 2) {
+      setAutoplay(false);
+      pomoroCounter.current = 0;
+    }
+  }, [selectedTabIndex]);
+
+  const onTimeEnd = useCallback(() => {
+    play();
+
+    if (autostart) {
+      setTimeout(() => {
+        startNextTimer();
+      }, 1000);
+    }
+  }, [play, autostart, startNextTimer]);
+
   const { statusText, currentTime, toggle, reset } = useTimer(
     selectedTimer.time,
+    autostart,
+    autoplay,
     onTimeEnd,
   );
 
@@ -35,17 +75,27 @@ export default function Pomodoro(): JSX.Element {
     setSelectedTabIndex(index);
   }
 
+  function handleToggle() {
+    toggle();
+    if (selectedTabIndex === 0) {
+      setAutoplay(true);
+    }
+  }
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.code === 'Space' && e.target === document.body) {
         toggle();
+        if (selectedTabIndex === 0) {
+          setAutoplay(true);
+        }
       }
     }
 
     document.addEventListener('keydown', handleKeyDown);
 
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [toggle]);
+  }, [toggle, selectedTabIndex]);
 
   return (
     <div className={styles.container}>
@@ -55,7 +105,7 @@ export default function Pomodoro(): JSX.Element {
           {timers.map(({ label }, tabIndex) => (
             <button
               className={`${styles.tab} ${
-                tabIndex === selectedTabIndex && styles.selectedTab
+                tabIndex === selectedTabIndex ? styles.selectedTab : ''
               }`}
               key={label}
               onClick={() => handleTabsChange(tabIndex)}
@@ -69,7 +119,7 @@ export default function Pomodoro(): JSX.Element {
             statusText={statusText}
             initialTime={selectedTimer.time}
             currentTime={currentTime}
-            toggle={toggle}
+            toggle={handleToggle}
             reset={reset}
           />
         </div>

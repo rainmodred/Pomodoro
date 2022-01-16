@@ -44,6 +44,8 @@ export default function SettingsModal({
   const soundSrc = `${sounds[currentSound]}`;
   const { play } = useSound(soundSrc, { volume, duration: 500 });
 
+  const [autostart, setAutostart] = useState(settings.autostart);
+
   function handleApply(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     dispatch({
@@ -76,6 +78,13 @@ export default function SettingsModal({
       });
     }
 
+    if (autostart !== settings.autostart) {
+      dispatch({
+        type: 'updateAutostart',
+        payload: autostart,
+      });
+    }
+
     close();
   }
 
@@ -102,6 +111,10 @@ export default function SettingsModal({
   function handleVolumeChange(value: number) {
     setVolume(value);
     play();
+  }
+
+  function handleAutostartChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setAutostart(autostart => !autostart);
   }
 
   return (
@@ -202,6 +215,19 @@ export default function SettingsModal({
                   <VolumeSlider onChange={handleVolumeChange} volume={volume} />
                 </div>
               </div>
+            </div>
+          </li>
+          <li className={styles.settingsItem}>
+            <div className={styles.autoStartWrapper}>
+              <label htmlFor="autoStart" className={styles.subHeading}>
+                Auto start ?
+              </label>
+              <input
+                id="autoStart"
+                type="checkbox"
+                checked={autostart}
+                onChange={handleAutostartChange}
+              />
             </div>
           </li>
         </ul>
