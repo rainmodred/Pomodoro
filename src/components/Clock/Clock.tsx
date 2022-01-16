@@ -1,7 +1,6 @@
 import styles from './Clock.module.css';
 
 interface ClockProps {
-  id?: string;
   time: number;
 }
 
@@ -21,9 +20,9 @@ function timeToMinSec(time: number) {
   );
 }
 
-export default function Clock({ id, time }: ClockProps): JSX.Element {
+export default function Clock({ time }: ClockProps): JSX.Element {
   return (
-    <div className={styles.clock} data-testid={`${id}-clock`}>
+    <div className={styles.clock} data-testid="clock">
       {timeToMinSec(time)}
     </div>
   );
