@@ -17,18 +17,15 @@ type Settings = {
 };
 
 type ACTIONTYPE =
-  | {
-      type: 'updateSettings';
-      payload: {
-        timers: Record<string, string>;
-        selectedColor: string;
-      };
-    }
   | { type: 'updateSound'; payload: Sounds }
   | { type: 'updateVolume'; payload: number }
   | {
       type: 'updateColor';
       payload: Colors;
+    }
+  | {
+      type: 'updateTimers';
+      payload: TimerType[];
     };
 
 const initialState: Settings = {
@@ -50,6 +47,14 @@ function reducer(state: typeof initialState, action: ACTIONTYPE) {
   let updatedSettings: Settings | null = null;
 
   switch (action.type) {
+    case 'updateTimers':
+      const timers = action.payload;
+      updatedSettings = {
+        ...state,
+        timers,
+      };
+      setToStorage('settings', updatedSettings);
+      return updatedSettings;
     case 'updateColor':
       const color = action.payload;
       updatedSettings = {
