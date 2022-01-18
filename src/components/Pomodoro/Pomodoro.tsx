@@ -7,6 +7,7 @@ import useTimer from './useTimer';
 import useSound from './useSound';
 import Timer from '../Timer/Timer';
 import { sounds } from '../../constants';
+import { timeToMinSec } from '../../utils/utils';
 
 import styles from './Pomodoro.module.css';
 
@@ -81,6 +82,11 @@ export default function Pomodoro(): JSX.Element {
       setAutoplay(true);
     }
   }
+
+  useEffect(() => {
+    const { minutes, seconds } = timeToMinSec(currentTime);
+    document.title = `${minutes}:${seconds}`;
+  }, [currentTime]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
