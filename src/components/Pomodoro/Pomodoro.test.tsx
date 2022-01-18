@@ -134,4 +134,6 @@ describe('Pomodoro', () => {
     userEvent.click(screen.getByText(/apply/i));
     expect(await screen.findByTestId('clock')).toHaveTextContent('20:00');
   });
+
+  it.todo('should change timers if autstart is true');
 });
