@@ -15,6 +15,7 @@ type Settings = {
   volume: number;
   selectedSound: Sounds;
   autostart: boolean;
+  notification: boolean;
 };
 
 type ACTIONTYPE =
@@ -31,6 +32,10 @@ type ACTIONTYPE =
   | {
       type: 'updateAutostart';
       payload: boolean;
+    }
+  | {
+      type: 'updateNotification';
+      payload: boolean;
     };
 
 const initialState: Settings = {
@@ -43,6 +48,7 @@ const initialState: Settings = {
   volume: 50,
   selectedSound: 'Analog Alarm',
   autostart: true,
+  notification: true,
 };
 
 function getInitialState() {
@@ -113,6 +119,20 @@ interface SettingsProviderProps {
 
 function SettingsProvider({ children }: SettingsProviderProps): JSX.Element {
   const [settings, dispatch] = useReducer(reducer, getInitialState());
+
+  useEffect(() => {
+    Notification.requestPermission().then(permission => {
+      if (window.Notification && permission !== 'denied') {
+        Notification.requestPermission(function (status) {
+          // status is "granted", if accepted by user
+          var n = new Notification('Title', {
+            body: 'I am the body text!',
+            icon: '/path/to/icon.png', // optional
+          });
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     root.style.setProperty('--color-main', settings.selectedColor);
