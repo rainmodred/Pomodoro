@@ -1,8 +1,7 @@
-import { act, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 
 import Timer from './Timer';
-import { wrapper } from '../../utils';
+import { wrapper } from '../../utils/testUtils';
 const DEFAULT_TIME = 1500;
 
 describe('Timer', () => {
@@ -16,74 +15,20 @@ describe('Timer', () => {
   });
 
   it('renders Timer', () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
+    render(
+      <Timer
+        initialTime={DEFAULT_TIME}
+        currentTime={DEFAULT_TIME}
+        statusText="start"
+        reset={jest.fn}
+        toggle={jest.fn}
+      />,
+      { wrapper },
+    );
 
-    expect(screen.getByTestId('meow-start')).toBeInTheDocument();
-    expect(screen.getByTestId('meow-clock')).toBeInTheDocument();
+    expect(screen.getByTestId('toggle')).toBeInTheDocument();
+    expect(screen.getByTestId('clock')).toBeInTheDocument();
     expect(screen.getByText(/start/i)).toBeInTheDocument();
-    expect(screen.getByTestId('meow-reset')).toBeInTheDocument();
-  });
-
-  it('on timer button click it changes text', () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
-
-    const startButton = screen.getByTestId('meow-start');
-    userEvent.click(startButton);
-    expect(screen.queryByText(/start/i)).not.toBeInTheDocument();
-
-    expect(screen.getByText(/pause/i)).toBeInTheDocument();
-    userEvent.click(startButton);
-    expect(screen.queryByText(/pause/i)).not.toBeInTheDocument();
-  });
-
-  it('on start button click start timer', async () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
-
-    userEvent.click(screen.getByTestId('meow-start'));
-
-    act(() => {
-      jest.advanceTimersByTime(60000);
-    });
-
-    expect(screen.getByTestId('meow-clock')).toHaveTextContent('24:00');
-  });
-
-  it('reset click resets timer', () => {
-    render(<Timer id="meow" tabIndex={0} time={DEFAULT_TIME} />, { wrapper });
-
-    userEvent.click(screen.getByTestId('meow-start'));
-
-    act(() => {
-      jest.advanceTimersByTime(100000);
-    });
-
-    userEvent.click(screen.getByTestId('meow-reset'));
-
-    expect(screen.getByTestId('meow-clock')).toHaveTextContent('25:00');
-    expect(screen.getByText(/start/i)).toBeInTheDocument();
-  });
-
-  it('on time end start/pause button is disabled', () => {
-    render(<Timer id="meow" tabIndex={0} time={1} />, { wrapper });
-
-    userEvent.click(screen.getByTestId('meow-start'));
-
-    act(() => {
-      jest.advanceTimersByTime(60000);
-    });
-
-    expect(screen.getByTestId('meow-start')).toBeDisabled();
-  });
-
-  it('should stop timer on time end', () => {
-    render(<Timer id="meow" tabIndex={0} time={1} />, { wrapper });
-
-    userEvent.click(screen.getByTestId('meow-start'));
-
-    act(() => {
-      jest.advanceTimersByTime(60000);
-    });
-
-    expect(screen.getByTestId('meow-clock')).toHaveTextContent('00:00');
+    expect(screen.getByTestId('reset')).toBeInTheDocument();
   });
 });

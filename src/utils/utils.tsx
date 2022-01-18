@@ -1,5 +1,3 @@
-import { SettingsProvider } from './context/SettingsContext';
-
 function getFromStrorage(key: string) {
   const data = window.localStorage.getItem(key);
   if (!data) {
@@ -12,8 +10,4 @@ function setToStorage<T>(key: string, value: T) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
-const wrapper: React.FC = ({ children }) => (
-  <SettingsProvider>{children}</SettingsProvider>
-);
-
-export { getFromStrorage, setToStorage, wrapper };
+export { getFromStrorage, setToStorage };

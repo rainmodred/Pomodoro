@@ -34,7 +34,7 @@ export default function Timer({
       <div className={styles.wrapper}>
         <button
           onClick={toggle}
-          // data-testid={`${id}-start`}
+          data-testid="toggle"
           disabled={currentTime === 0}
           className={styles.timer}
         >
@@ -47,11 +47,7 @@ export default function Timer({
           <Clock time={currentTime} />
           <p className={styles.status}>{statusText}</p>
         </button>
-        <button
-          className={styles.reset}
-          onClick={reset}
-          // data-testid={`${id}-reset`}
-        >
+        <button className={styles.reset} onClick={reset} data-testid="reset">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="icon icon-tabler icon-tabler-refresh"

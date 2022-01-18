@@ -1,6 +1,6 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { wrapper } from '../../utils';
+import { wrapper } from '../../utils/testUtils';
 
 import Pomodoro from './Pomodoro';
 
@@ -19,40 +19,91 @@ describe('Pomodoro', () => {
 
     expect(screen.getByText('Pomodoro')).toBeInTheDocument();
 
-    expect(screen.getByRole('tab', { name: /pomodoro/i })).toBeInTheDocument();
     expect(
-      screen.getByRole('tab', { name: /short break/i }),
+      screen.getByRole('button', {
+        name: /pomodoro/i,
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('tab', { name: /long break/i }),
+      screen.getByRole('button', { name: /short break/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /long break/i }),
     ).toBeInTheDocument();
 
-    expect(screen.getByTestId('pomodoro-clock')).toBeVisible();
-    expect(screen.getByTestId('short break-clock')).not.toBeVisible();
-    expect(screen.getByTestId('long break-clock')).not.toBeVisible();
+    expect(screen.getByTestId('clock')).toBeVisible();
 
-    expect(screen.getByTestId('pomodoro-start')).toBeInTheDocument();
-    expect(screen.getByTestId('pomodoro-reset')).toBeInTheDocument();
+    expect(screen.getByTestId('toggle')).toBeInTheDocument();
+    expect(screen.getByTestId('reset')).toBeInTheDocument();
     expect(screen.getByTestId('settings')).toBeInTheDocument();
   });
 
-  it('resets timer on tab change', () => {
+  it('should start timer on click', async () => {
     render(<Pomodoro />, { wrapper });
 
-    userEvent.click(screen.getByTestId('pomodoro-start'));
+    userEvent.click(screen.getByTestId('toggle'));
 
     act(() => {
       jest.advanceTimersByTime(100000);
     });
 
-    userEvent.click(screen.getByRole('tab', { name: /short break/i }));
-    expect(screen.getByTestId('short break-clock')).toHaveTextContent('05:00');
-
-    userEvent.click(screen.getByRole('tab', { name: /pomodoro/i }));
-    expect(screen.getByTestId('pomodoro-clock')).toHaveTextContent('25:00');
+    expect(await screen.findByTestId('clock')).toHaveTextContent('23:20');
+    expect(screen.getByText('pause')).toBeInTheDocument();
   });
 
-  it('on settings click opens modal', () => {
+  it('should start timer on keydown', () => {
+    render(<Pomodoro />, { wrapper });
+
+    fireEvent.keyDown(document, { key: ' ', code: 'SpaceSpace' });
+    expect(screen.getByText('start')).toBeInTheDocument();
+  });
+
+  it('should pause timer', async () => {
+    render(<Pomodoro />, { wrapper });
+
+    userEvent.click(screen.getByTestId('toggle'));
+
+    act(() => {
+      jest.advanceTimersByTime(100000);
+    });
+
+    expect(await screen.findByTestId('clock')).toHaveTextContent('23:20');
+    userEvent.click(screen.getByTestId('toggle'));
+    expect(screen.getByText('start')).toBeInTheDocument();
+  });
+
+  it('should reset timer on reset button click', async () => {
+    render(<Pomodoro />, { wrapper });
+
+    userEvent.click(screen.getByTestId('toggle'));
+
+    act(() => {
+      jest.advanceTimersByTime(100000);
+    });
+
+    userEvent.click(screen.getByTestId('reset'));
+
+    expect(await screen.findByTestId('clock')).toHaveTextContent('25:00');
+  });
+
+  it('should reset timer on manual tab change', async () => {
+    render(<Pomodoro />, { wrapper });
+
+    userEvent.click(screen.getByTestId('toggle'));
+
+    act(() => {
+      jest.advanceTimersByTime(100000);
+    });
+
+    userEvent.click(screen.getByRole('button', { name: /short break/i }));
+    //screen.getByTestId() not working
+    expect(await screen.findByTestId('clock')).toHaveTextContent('05:00');
+
+    userEvent.click(screen.getByRole('button', { name: /pomodoro/i }));
+    expect(await screen.findByTestId('clock')).toHaveTextContent('25:00');
+  });
+
+  it('should open settings dialog', () => {
     render(<Pomodoro />, { wrapper });
 
     userEvent.click(screen.getByTestId('settings'));
@@ -70,7 +121,7 @@ describe('Pomodoro', () => {
     ).toBeInTheDocument();
   });
 
-  it('can change pomodoro time', () => {
+  it('should change pomodoro time', async () => {
     render(<Pomodoro />, { wrapper });
 
     userEvent.click(screen.getByTestId('settings'));
@@ -81,7 +132,6 @@ describe('Pomodoro', () => {
     expect(input).toHaveValue(20);
 
     userEvent.click(screen.getByText(/apply/i));
-
-    expect(screen.getByTestId('pomodoro-clock')).toHaveTextContent('20:00');
+    expect(await screen.findByTestId('clock')).toHaveTextContent('20:00');
   });
 });
