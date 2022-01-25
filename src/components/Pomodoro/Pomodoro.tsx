@@ -54,6 +54,13 @@ export default function Pomodoro(): JSX.Element {
   const onTimeEnd = useCallback(() => {
     play();
 
+    if (window.Notification && Notification.permission !== 'denied') {
+      new Notification('Pomodoro', {
+        body: 'Your time is up!',
+        silent: true,
+      });
+    }
+
     if (autostart) {
       setTimeout(() => {
         startNextTimer();

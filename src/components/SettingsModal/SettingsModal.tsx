@@ -46,6 +46,8 @@ export default function SettingsModal({
 
   const [autostart, setAutostart] = useState(settings.autostart);
 
+  const [notification, setNotification] = useState(settings.notification);
+
   function handleApply(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     dispatch({
@@ -85,6 +87,13 @@ export default function SettingsModal({
       });
     }
 
+    if (notification !== settings.notification) {
+      dispatch({
+        type: 'updateNotification',
+        payload: notification,
+      });
+    }
+
     close();
   }
 
@@ -114,7 +123,11 @@ export default function SettingsModal({
   }
 
   function handleAutostartChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setAutostart(autostart => !autostart);
+    setAutostart(!autostart);
+  }
+
+  function handleNotificationChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setNotification(!notification);
   }
 
   return (
@@ -227,6 +240,19 @@ export default function SettingsModal({
                 type="checkbox"
                 checked={autostart}
                 onChange={handleAutostartChange}
+              />
+            </div>
+          </li>
+          <li className={styles.settingsItem}>
+            <div className={styles.autoStartWrapper}>
+              <label htmlFor="notification" className={styles.subHeading}>
+                Notification
+              </label>
+              <input
+                id="notification"
+                type="checkbox"
+                checked={notification}
+                onChange={handleNotificationChange}
               />
             </div>
           </li>
