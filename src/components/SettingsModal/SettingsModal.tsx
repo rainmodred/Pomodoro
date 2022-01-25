@@ -21,7 +21,6 @@ export default function SettingsModal({
   close,
 }: SettingsModalProps): JSX.Element {
   const [settings, dispatch] = useSettings();
-  const { selectedSound } = settings;
 
   const [timers, setTimers] = useState(
     settings.timers.reduce<Record<string, string>>((prev, curr) => {
@@ -39,8 +38,8 @@ export default function SettingsModal({
   );
 
   const soundsList = Object.keys(sounds);
-  const [currentSound, setCurrentSound] = useState<Sounds>(selectedSound);
-  const [volume, setVolume] = useState(settings.volume);
+  const [currentSound, setCurrentSound] = useState<Sounds>(settings.sound.name);
+  const [volume, setVolume] = useState(settings.sound.volume);
   const soundSrc = `${sounds[currentSound]}`;
   const { play } = useSound(soundSrc, { volume, duration: 500 });
 
@@ -66,17 +65,16 @@ export default function SettingsModal({
       });
     }
 
-    if (selectedSound !== settings.selectedSound) {
+    if (
+      currentSound !== settings.sound.name ||
+      volume !== settings.sound.volume
+    ) {
       dispatch({
         type: 'updateSound',
-        payload: selectedSound,
-      });
-    }
-
-    if (volume !== settings.volume) {
-      dispatch({
-        type: 'updateVolume',
-        payload: volume,
+        payload: {
+          name: currentSound,
+          volume,
+        },
       });
     }
 
@@ -131,14 +129,8 @@ export default function SettingsModal({
   }
 
   function handleResetSettings() {
-    const {
-      timers,
-      selectedColor,
-      selectedSound,
-      volume,
-      autostart,
-      notification,
-    } = initialSettings;
+    const { timers, selectedColor, sound, autostart, notification } =
+      initialSettings;
 
     setTimers(
       timers.reduce<Record<string, string>>((prev, curr) => {
@@ -154,8 +146,8 @@ export default function SettingsModal({
       ),
     );
 
-    setCurrentSound(selectedSound);
-    setVolume(volume);
+    setCurrentSound(sound.name);
+    setVolume(sound.volume);
     setAutostart(autostart);
     setNotification(notification);
   }

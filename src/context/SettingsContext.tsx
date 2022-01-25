@@ -12,15 +12,22 @@ type TimerType = {
 type Settings = {
   timers: TimerType[];
   selectedColor: Colors;
-  volume: number;
-  selectedSound: Sounds;
+  sound: {
+    name: Sounds;
+    volume: number;
+  };
   autostart: boolean;
   notification: boolean;
 };
 
 type ACTIONTYPE =
-  | { type: 'updateSound'; payload: Sounds }
-  | { type: 'updateVolume'; payload: number }
+  | {
+      type: 'updateSound';
+      payload: {
+        name: Sounds;
+        volume: number;
+      };
+    }
   | {
       type: 'updateColor';
       payload: Colors;
@@ -44,9 +51,12 @@ export const initialSettings: Settings = {
     { label: 'short break', time: 300 },
     { label: 'long break', time: 600 },
   ],
+
   selectedColor: '#f67174',
-  volume: 50,
-  selectedSound: 'Analog Alarm',
+  sound: {
+    name: 'Analog Alarm',
+    volume: 50,
+  },
   autostart: true,
   notification: true,
 };
@@ -78,23 +88,18 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       return updatedSettings;
 
     case 'updateSound':
-      const sound = action.payload;
+      const { name, volume } = action.payload;
       updatedSettings = {
         ...state,
-        selectedSound: sound,
+        sound: {
+          name,
+          volume,
+        },
       };
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-    case 'updateVolume':
-      const volume = action.payload;
-      updatedSettings = {
-        ...state,
-        volume,
-      };
-      setToStorage('settings', updatedSettings);
 
-      return updatedSettings;
     case 'updateAutostart':
       const autostart = action.payload;
       updatedSettings = {

@@ -12,7 +12,7 @@ import { timeToMinSec } from '../../utils/utils';
 import styles from './Pomodoro.module.css';
 
 export default function Pomodoro(): JSX.Element {
-  const [{ timers, selectedSound, volume, autostart }] = useSettings();
+  const [{ timers, sound, autostart }] = useSettings();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const selectedTimer = timers[selectedTabIndex];
 
@@ -20,9 +20,9 @@ export default function Pomodoro(): JSX.Element {
   //if true will autoStart next timer
   const [autoplay, setAutoplay] = useState(false);
 
-  const soundSrc = `${sounds[selectedSound]}`;
+  const soundSrc = `${sounds[sound.name]}`;
   const { play } = useSound(soundSrc, {
-    volume,
+    volume: sound.volume,
     duration: 2000,
   });
 
