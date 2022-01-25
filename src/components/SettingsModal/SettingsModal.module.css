@@ -55,11 +55,18 @@
   flex-basis: 100px;
 }
 
-.submit {
+.buttonsWrapper {
   position: absolute;
-  right: 20%;
-  bottom: 0;
   transform: translateY(50%);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  column-gap: 4rem;
+}
+
+.button {
   background-color: var(--color-main);
   color: white;
   padding: 5px 15px;
@@ -69,11 +76,11 @@
   outline: none;
 }
 
-.submit:hover {
-  transform: rotate(5deg);
+.button:hover {
+  background-color: var(--color-blue);
 }
 
-.submit:focus {
+.button:focus {
   box-shadow: 0 0 0 0.05em #000, 0 0 0.15em 0.1em currentColor;
 }
 

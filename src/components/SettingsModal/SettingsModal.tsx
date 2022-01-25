@@ -4,7 +4,7 @@ import VisuallyHidden from '@reach/visually-hidden';
 import { Listbox, ListboxList, ListboxOption } from '@reach/listbox';
 import '@reach/listbox/styles.css';
 
-import { useSettings } from '../../context/SettingsContext';
+import { initialSettings, useSettings } from '../../context/SettingsContext';
 import NumberInput from '../NumberInput/NumberInput';
 import VolumeSlider from '../VolumeSlider';
 import useSound from '../Pomodoro/useSound';
@@ -128,6 +128,36 @@ export default function SettingsModal({
 
   function handleNotificationChange(e: React.ChangeEvent<HTMLInputElement>) {
     setNotification(!notification);
+  }
+
+  function handleResetSettings() {
+    const {
+      timers,
+      selectedColor,
+      selectedSound,
+      volume,
+      autostart,
+      notification,
+    } = initialSettings;
+
+    setTimers(
+      timers.reduce<Record<string, string>>((prev, curr) => {
+        prev[curr.label] = (curr.time / 60).toString();
+        return prev;
+      }, {}),
+    );
+    setColors(
+      [...colorsList].map(color =>
+        color.value === selectedColor
+          ? { ...color, checked: true }
+          : { ...color, checked: false },
+      ),
+    );
+
+    setCurrentSound(selectedSound);
+    setVolume(volume);
+    setAutostart(autostart);
+    setNotification(notification);
   }
 
   return (
@@ -258,9 +288,18 @@ export default function SettingsModal({
           </li>
         </ul>
 
-        <button className={styles.submit} type="submit">
-          Apply
-        </button>
+        <div className={styles.buttonsWrapper}>
+          <button className={`${styles.button} ${styles.submit}`} type="submit">
+            Apply
+          </button>
+          <button
+            className={`${styles.button} ${styles.reset}`}
+            type="button"
+            onClick={handleResetSettings}
+          >
+            Reset
+          </button>
+        </div>
       </form>
     </Dialog>
   );

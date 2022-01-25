@@ -29,7 +29,7 @@ export default function VolumeSlider({ volume, onChange }: VolumeSliderProps) {
       min={0}
       max={100}
       step={5}
-      defaultValue={volume}
+      value={volume}
     >
       <SliderTrack>
         <SliderRange />

@@ -38,7 +38,7 @@ type ACTIONTYPE =
       payload: boolean;
     };
 
-const initialState: Settings = {
+export const initialSettings: Settings = {
   timers: [
     { label: 'pomodoro', time: 1500 },
     { label: 'short break', time: 300 },
@@ -52,10 +52,10 @@ const initialState: Settings = {
 };
 
 function getInitialState() {
-  return getFromStrorage('settings') || initialState;
+  return getFromStrorage('settings') || initialSettings;
 }
 
-function reducer(state: typeof initialState, action: ACTIONTYPE) {
+function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
   let updatedSettings: Settings | null = null;
 
   switch (action.type) {
