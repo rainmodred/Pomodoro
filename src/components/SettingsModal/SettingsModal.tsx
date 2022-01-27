@@ -6,7 +6,7 @@ import '@reach/listbox/styles.css';
 
 import { initialSettings, useSettings } from '../../context/SettingsContext';
 import NumberInput from '../NumberInput/NumberInput';
-import VolumeSlider from '../VolumeSlider';
+import VolumeSlider from '../VolumeSlider/VolumeSlider';
 import useSound from '../Pomodoro/useSound';
 import { sounds, colors as colorsList, Colors, Sounds } from '../../constants';
 
