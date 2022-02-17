@@ -24,6 +24,9 @@ export default function useTimer(
   const [status, setStatus] = useState(Status.Paused);
   const [currentTime, setCurrentTime] = useState(initialTime);
 
+  const startTime = useRef(0);
+  const lastTime = useRef(0);
+
   const timerId = useRef(0);
 
   useEffect(() => {
@@ -37,10 +40,14 @@ export default function useTimer(
 
   useEffect(() => {
     if (status === Status.Started) {
-      timerId.current = window.setInterval(
-        () => setCurrentTime(currentTime => currentTime - 1),
-        1000,
-      );
+      timerId.current = window.setInterval(() => {
+        const elapsedTime = Date.now() - startTime.current;
+        const timeInSeconds = Math.round(elapsedTime / 1000);
+        if (timeInSeconds !== lastTime.current) {
+          lastTime.current = timeInSeconds;
+          setCurrentTime(currentTime => currentTime - 1);
+        }
+      }, 100);
     }
 
     if (status === Status.Paused) {
@@ -63,6 +70,7 @@ export default function useTimer(
     }
     if (status === Status.Paused) {
       setStatus(Status.Started);
+      startTime.current = Date.now();
     } else {
       setStatus(Status.Paused);
     }

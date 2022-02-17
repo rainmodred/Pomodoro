@@ -38,8 +38,10 @@ describe('Pomodoro', () => {
     expect(screen.getByTestId('settings')).toBeInTheDocument();
   });
 
+  //TODO
   it('should start timer on click', async () => {
-    render(<Pomodoro />, { wrapper });
+    jest.useFakeTimers();
+    const { debug } = render(<Pomodoro />, { wrapper });
 
     userEvent.click(screen.getByTestId('toggle'));
 
