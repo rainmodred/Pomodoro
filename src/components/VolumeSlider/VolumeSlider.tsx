@@ -1,13 +1,6 @@
-import {
-  SliderInput,
-  SliderTrack,
-  SliderRange,
-  SliderHandle,
-  SliderMarker,
-} from '@reach/slider';
-import '@reach/slider/styles.css';
-import { useMemo } from 'react';
-import debounce from 'lodash.debounce';
+import * as Slider from '@radix-ui/react-slider';
+
+import styles from './VolumeSlider.module.css';
 
 interface VolumeSliderProps {
   volume: number;
@@ -15,29 +8,24 @@ interface VolumeSliderProps {
 }
 
 export default function VolumeSlider({ volume, onChange }: VolumeSliderProps) {
-  const markers = [25, 50, 75];
-
-  function handleChange(value: number) {
-    onChange(value);
-  }
-
-  const debouncedHandler = useMemo(() => debounce(handleChange, 200), []);
-
   return (
-    <SliderInput
-      onChange={value => debouncedHandler(value)}
-      min={0}
-      max={100}
-      step={5}
-      value={volume}
-    >
-      <SliderTrack>
-        <SliderRange />
-        {markers.map(value => (
-          <SliderMarker key={`marker${value}`} value={value} />
-        ))}
-        <SliderHandle />
-      </SliderTrack>
-    </SliderInput>
+    <div className={styles.container}>
+      <span className={styles.volume}>{volume}</span>
+      <Slider.Root
+        className={styles.sliderRoot}
+        min={0}
+        max={100}
+        step={5}
+        defaultValue={[volume]}
+        onValueCommit={values => {
+          onChange(values.at(0) as number);
+        }}
+      >
+        <Slider.Track className={styles.sliderTrack}>
+          <Slider.Range className={styles.sliderRange} />
+        </Slider.Track>
+        <Slider.Thumb className={styles.sliderThumb} aria-label="volume" />
+      </Slider.Root>
+    </div>
   );
 }

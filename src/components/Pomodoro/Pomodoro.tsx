@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import '@reach/dialog/styles.css';
 
 import { useSettings } from '../../context/SettingsContext';
 import SettingsModal from '../SettingsModal/SettingsModal';

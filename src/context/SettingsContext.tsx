@@ -58,7 +58,7 @@ export const initialSettings: Settings = {
     volume: 50,
   },
   autostart: true,
-  notification: true,
+  notification: false,
 };
 
 function getInitialState() {
@@ -110,7 +110,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
 
       return updatedSettings;
     case 'updateNotification':
-      const notification = action.payload;
+      let notification = action.payload;
       updatedSettings = {
         ...state,
         notification,

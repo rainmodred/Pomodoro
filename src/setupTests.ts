@@ -1,17 +1,34 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
+import { vi, expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import matchers from '@testing-library/jest-dom/matchers';
 
-jest
-  .spyOn(window.HTMLMediaElement.prototype, 'pause')
-  .mockImplementation(() => {});
+// extends Vitest's expect method with methods from react-testing-library
+expect.extend(matchers);
 
-//beforeALl not working
-global.beforeEach(() => {
-  global.Notification = {
-    requestPermission: jest.fn().mockResolvedValue('denied'),
-    permission: 'granted',
-  } as unknown as jest.Mocked<typeof Notification>;
+// @ts-ignore
+globalThis.jest = vi;
+
+// runs a cleanup after each test case (e.g. clearing jsdom)
+afterEach(() => {
+  cleanup();
 });
+
+const Notification = {
+  requestPermission: vi.fn(() => Promise.resolve('granted')),
+  persmission: 'granted',
+};
+
+const Audio = vi.fn(() => ({
+  play: vi.fn(),
+  pause: vi.fn(),
+}));
+
+const ResizeObserver = vi.fn().mockImplementation(() => ({
+  disconnect: vi.fn(),
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+}));
+
+vi.stubGlobal('Notification', Notification);
+vi.stubGlobal('Audio', Audio);
+vi.stubGlobal('ResizeObserver', ResizeObserver);

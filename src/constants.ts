@@ -1,7 +1,7 @@
 const sounds = {
-  'Analog Alarm': '/Pomodoro/audio/Analog Alarm.mp3',
-  Ding: '/Pomodoro/audio/Ding.mp3',
-  'Digital Alarm': '/Pomodoro/audio/Digital Alarm.mp3',
+  'Analog Alarm': '/audio/Analog Alarm.mp3',
+  Ding: '/audio/Ding.mp3',
+  'Digital Alarm': '/audio/Digital Alarm.mp3',
 };
 
 type Sounds = keyof typeof sounds;

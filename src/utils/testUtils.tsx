@@ -1,6 +1,7 @@
+import { ReactNode } from 'react';
 import { SettingsProvider } from '../context/SettingsContext';
 
-const wrapper: React.FC = ({ children }) => (
+const wrapper = ({ children }: { children: ReactNode }) => (
   <SettingsProvider>{children}</SettingsProvider>
 );
 

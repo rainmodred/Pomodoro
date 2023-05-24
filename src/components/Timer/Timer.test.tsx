@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { vi, afterAll } from 'vitest';
 
 import Timer from './Timer';
 import { wrapper } from '../../utils/testUtils';
@@ -6,12 +7,12 @@ const DEFAULT_TIME = 1500;
 
 describe('Timer', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterAll(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 
   it('renders Timer', () => {
@@ -20,8 +21,8 @@ describe('Timer', () => {
         initialTime={DEFAULT_TIME}
         currentTime={DEFAULT_TIME}
         statusText="start"
-        reset={jest.fn}
-        toggle={jest.fn}
+        reset={vi.fn}
+        toggle={vi.fn}
       />,
       { wrapper },
     );
