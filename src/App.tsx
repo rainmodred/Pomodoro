@@ -27,7 +27,59 @@ function NewPomodoro() {
   const timerId = useRef(0);
   const usedShortBreaks = useRef(0);
 
-  function startTimer() { }
+  useEffect(() => {
+    console.log('meow', state);
+    if (autoStart) {
+      startTimer();
+    }
+  }, [state.timerName]);
+
+  function startTimer() {
+    console.log('started');
+    timerId.current = window.setInterval(() => {
+      console.log('tick');
+      setState(state => {
+        if (state.currentTime === 0) {
+          window.clearInterval(timerId.current);
+          if (
+            state.timerName === 'short break' ||
+            state.timerName === 'long break'
+          ) {
+            usedShortBreaks.current = state.timerName === 'short break' ? 1 : 0;
+            return {
+              status: 'paused',
+              timerName: 'pomodoro',
+              currentTime: initialTimers['pomodoro'],
+            };
+          }
+          if (state.timerName === 'pomodoro') {
+            const nextTimerName =
+              usedShortBreaks.current === 1 ? 'long break' : 'short break';
+            return {
+              status: 'paused',
+              timerName: nextTimerName,
+              currentTime: initialTimers[nextTimerName],
+            };
+          }
+          throw new Error('wat');
+        }
+
+        return {
+          ...state,
+          currentTime: state.currentTime - 1,
+        };
+      });
+    }, 1000);
+  }
+
+  function resetTimer() {
+    window.clearInterval(timerId.current);
+    setState({
+      timerName: 'pomodoro',
+      status: 'paused',
+      currentTime: initialTimers['pomodoro'],
+    });
+  }
 
   function toggleTimer() {
     if (state.currentTime === 0) {
@@ -38,41 +90,7 @@ function NewPomodoro() {
     //TODO: refactor
     if (state.status === 'paused') {
       setState(state => ({ ...state, status: 'started' }));
-      timerId.current = window.setInterval(() => {
-        setState(state => {
-          console.log('tick', state);
-          if (state.currentTime === 0) {
-            window.clearInterval(timerId.current);
-            if (
-              state.timerName === 'short break' ||
-              state.timerName === 'long break'
-            ) {
-              usedShortBreaks.current =
-                state.timerName === 'short break' ? 1 : 0;
-              return {
-                status: 'paused',
-                timerName: 'pomodoro',
-                currentTime: initialTimers['pomodoro'],
-              };
-            }
-            if (state.timerName === 'pomodoro') {
-              const nextTimerName =
-                usedShortBreaks.current === 1 ? 'long break' : 'short break';
-              return {
-                status: 'paused',
-                timerName: nextTimerName,
-                currentTime: initialTimers[nextTimerName],
-              };
-            }
-            throw new Error('wat');
-          }
-
-          return {
-            ...state,
-            currentTime: state.currentTime - 1,
-          };
-        });
-      }, 1000);
+      startTimer();
       return;
     }
 
@@ -124,6 +142,7 @@ function NewPomodoro() {
       <button onClick={toggleTimer}>
         {state.status === 'paused' ? 'start' : 'pause'}
       </button>
+      <button onClick={resetTimer}>reset</button>
     </div>
   );
 }
