@@ -10,6 +10,8 @@ import { timeToMinSec } from '../../utils/utils';
 
 import styles from './Pomodoro.module.css';
 
+const initialTime = 1500;
+
 export default function Pomodoro(): JSX.Element {
   const [{ timers, sound, autostart }] = useSettings();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
@@ -68,9 +70,9 @@ export default function Pomodoro(): JSX.Element {
   }, [play, autostart, startNextTimer]);
 
   const { statusText, currentTime, toggle, reset } = useTimer(
-    selectedTimer.time,
-    autostart,
-    autoplay,
+    initialTime,
+    false,
+    false,
     onTimeEnd,
   );
 
@@ -116,9 +118,8 @@ export default function Pomodoro(): JSX.Element {
         <div className={styles.tabList}>
           {timers.map(({ label }, tabIndex) => (
             <button
-              className={`${styles.tab} ${
-                tabIndex === selectedTabIndex ? styles.selectedTab : ''
-              }`}
+              className={`${styles.tab} ${tabIndex === selectedTabIndex ? styles.selectedTab : ''
+                }`}
               key={label}
               onClick={() => handleTabsChange(tabIndex)}
             >

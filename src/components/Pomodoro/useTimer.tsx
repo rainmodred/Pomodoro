@@ -7,10 +7,9 @@ enum Status {
 
 export type StatusText = 'pause' | 'start';
 
-interface UseTimerType {
+interface UseTimerReturnType {
   statusText: StatusText;
   currentTime: number;
-
   toggle: () => void;
   reset: () => void;
 }
@@ -20,7 +19,7 @@ export default function useTimer(
   autoplay: boolean,
   autostart: boolean,
   onTimeEnd: () => void,
-): UseTimerType {
+): UseTimerReturnType {
   const [status, setStatus] = useState(Status.Paused);
   const [currentTime, setCurrentTime] = useState(initialTime);
 
