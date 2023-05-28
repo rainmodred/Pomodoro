@@ -20,6 +20,7 @@ function NewPomodoro() {
     status: 'paused',
     currentTime: initialTimers['pomodoro'],
   });
+  const test = 1;
 
   //TODO: WIP
   const [autoStart, setAutoStart] = useState(false);
