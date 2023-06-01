@@ -1,4 +1,4 @@
-function getFromStrorage(key: string) {
+function getFromStorage(key: string) {
   const data = window.localStorage.getItem(key);
   if (!data) {
     return null;
@@ -25,4 +25,4 @@ function timeToMinSec(time: number) {
   };
 }
 
-export { getFromStrorage, setToStorage, timeToMinSec };
+export { getFromStorage, setToStorage, timeToMinSec };

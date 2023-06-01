@@ -42,7 +42,7 @@ export default function Timer({
             progress={progress}
             radius={140}
             stroke={8}
-            color={selectedColor}
+            color={selectedColor.hex}
           />
           <Clock time={currentTime} />
           <p className={styles.status}>{statusText}</p>

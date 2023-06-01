@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useSettings } from '../../context/SettingsContext';
+import { DefaultTimers, useSettings } from '../../context/SettingsContext';
 import SettingsModal from '../SettingsModal/SettingsModal';
 import useTimer from './useTimer';
 import useSound from './useSound';
@@ -10,130 +10,143 @@ import { timeToMinSec } from '../../utils/utils';
 
 import styles from './Pomodoro.module.css';
 
-const initialTime = 1500;
+interface TimerState {
+  timerName: keyof DefaultTimers;
+  status: 'started' | 'paused';
+  currentTime: number;
+}
 
 export default function Pomodoro(): JSX.Element {
   const [{ timers, sound, autostart }] = useSettings();
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-  const selectedTimer = timers[selectedTabIndex];
 
-  const pomoroCounter = useRef(0);
-  //if true will autoStart next timer
-  const [autoplay, setAutoplay] = useState(false);
-
-  const soundSrc = `${sounds[sound.name]}`;
-  const { play } = useSound(soundSrc, {
-    volume: sound.volume,
-    duration: 2000,
+  const [timerState, setTimerState] = useState<TimerState>({
+    timerName: 'pomodoro',
+    status: 'paused',
+    currentTime: timers['pomodoro'],
   });
 
-  //work, short break, work, long break
-  const startNextTimer = useCallback(() => {
-    pomoroCounter.current++;
+  const [autoStart, setAutoStart] = useState(false);
 
-    if (selectedTabIndex === 1) {
-      setSelectedTabIndex(0);
-      return;
+  const timerId = useRef(0);
+  const usedShortBreaks = useRef(0);
+
+  useEffect(() => {
+    if (autoStart) {
+      startTimer();
     }
+  }, [timerState.timerName]);
 
-    if (selectedTabIndex === 0 && pomoroCounter.current === 1) {
-      setSelectedTabIndex(1);
-      return;
-    }
+  function startTimer() {
+    console.log('started');
+    timerId.current = window.setInterval(() => {
+      console.log('tick');
+      setTimerState(state => {
+        if (state.currentTime === 0) {
+          window.clearInterval(timerId.current);
+          if (
+            state.timerName === 'short break' ||
+            state.timerName === 'long break'
+          ) {
+            usedShortBreaks.current = state.timerName === 'short break' ? 1 : 0;
+            return {
+              status: 'paused',
+              timerName: 'pomodoro',
+              currentTime: timers['pomodoro'],
+            };
+          }
+          if (state.timerName === 'pomodoro') {
+            const nextTimerName =
+              usedShortBreaks.current === 1 ? 'long break' : 'short break';
+            return {
+              status: 'paused',
+              timerName: nextTimerName,
+              currentTime: timers[nextTimerName],
+            };
+          }
+          throw new Error('wat');
+        }
 
-    if (selectedTabIndex === 0 && pomoroCounter.current === 3) {
-      setSelectedTabIndex(2);
-      return;
-    }
-
-    if (selectedTabIndex === 2) {
-      setAutoplay(false);
-      pomoroCounter.current = 0;
-    }
-  }, [selectedTabIndex]);
-
-  const onTimeEnd = useCallback(() => {
-    play();
-
-    if (window.Notification && Notification.permission !== 'denied') {
-      new Notification('Pomodoro', {
-        body: 'Your time is up!',
-        silent: true,
+        return {
+          ...state,
+          currentTime: state.currentTime - 1,
+        };
       });
+    }, 1000);
+  }
+
+  function resetTimer() {
+    window.clearInterval(timerId.current);
+    setTimerState({
+      timerName: 'pomodoro',
+      status: 'paused',
+      currentTime: timers['pomodoro'],
+    });
+  }
+
+  function toggleTimer() {
+    if (timerState.currentTime === 0) {
+      throw new Error('not implemented');
     }
 
-    if (autostart) {
-      setTimeout(() => {
-        startNextTimer();
-      }, 1000);
+    if (timerState.status === 'paused') {
+      setTimerState(state => ({ ...state, status: 'started' }));
+      startTimer();
+      return;
     }
-  }, [play, autostart, startNextTimer]);
 
-  const { statusText, currentTime, toggle, reset } = useTimer(
-    initialTime,
-    false,
-    false,
-    onTimeEnd,
-  );
+    if (timerState.status === 'started') {
+      window.clearInterval(timerId.current);
+      setTimerState(state => ({ ...state, status: 'paused' }));
+      return;
+    }
+  }
+
+  function handleTabSwitch(timerName: keyof typeof timers) {
+    window.clearInterval(timerId.current);
+    setTimerState({
+      timerName,
+      status: 'paused',
+      currentTime: timers[timerName],
+    });
+  }
+
+  useEffect(() => {
+    return () => window.clearInterval(timerId.current);
+  }, []);
 
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
-
-  function handleTabsChange(index: number) {
-    setSelectedTabIndex(index);
-  }
-
-  function handleToggle() {
-    toggle();
-    if (selectedTabIndex === 0) {
-      setAutoplay(true);
-    }
-  }
-
-  useEffect(() => {
-    const { minutes, seconds } = timeToMinSec(currentTime);
-    document.title = `${minutes}:${seconds}`;
-  }, [currentTime]);
-
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.code === 'Space' && e.target === document.body) {
-        toggle();
-        if (selectedTabIndex === 0) {
-          setAutoplay(true);
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [toggle, selectedTabIndex]);
 
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Pomodoro</h1>
       <div>
         <div className={styles.tabList}>
-          {timers.map(({ label }, tabIndex) => (
-            <button
-              className={`${styles.tab} ${tabIndex === selectedTabIndex ? styles.selectedTab : ''
-                }`}
-              key={label}
-              onClick={() => handleTabsChange(tabIndex)}
-            >
-              {label}
-            </button>
-          ))}
+          {(Object.keys(timers) as Array<keyof typeof timers>).map(
+            timerName => {
+              return (
+                <button
+                  className={`${styles.tab} ${
+                    timerName === timerState.timerName ? styles.selectedTab : ''
+                  }`}
+                  key={timerName}
+                  onClick={() => handleTabSwitch(timerName)}
+                >
+                  {timerName}
+                </button>
+              );
+            },
+          )}
         </div>
         <div className={styles.tabPanel}>
+          {' '}
           <Timer
-            statusText={statusText}
-            initialTime={selectedTimer.time}
-            currentTime={currentTime}
-            toggle={handleToggle}
-            reset={reset}
+            initialTime={timers[timerState.timerName]}
+            statusText={timerState.status === 'paused' ? 'start' : 'pause'}
+            currentTime={timerState.currentTime}
+            toggle={toggleTimer}
+            reset={resetTimer}
           />
         </div>
       </div>

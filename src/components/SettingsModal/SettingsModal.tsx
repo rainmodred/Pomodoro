@@ -1,17 +1,14 @@
 import { useState } from 'react';
-// import { Dialog } from '@reach/dialog';
-// import VisuallyHidden from '@reach/visually-hidden';
-// import { Listbox, ListboxList, ListboxOption } from '@reach/listbox';
-// import '@reach/listbox/styles.css';
 import { Select, SelectItem } from '../Select/Select';
 import * as Dialog from '@radix-ui/react-dialog';
 import { ChevronDownIcon, Cross2Icon } from '@radix-ui/react-icons';
 
 import { initialSettings, useSettings } from '../../context/SettingsContext';
+import ColorPicker from './ColorPicker';
 import NumberInput from '../NumberInput/NumberInput';
 import VolumeSlider from '../VolumeSlider/VolumeSlider';
 import useSound from '../Pomodoro/useSound';
-import { sounds, colors as colorsList, Colors, Sounds } from '../../constants';
+import { Colors, sounds, Sound } from '../../constants';
 
 import styles from './SettingsModal.module.css';
 
@@ -25,24 +22,12 @@ export default function SettingsModal({
   close,
 }: SettingsModalProps): JSX.Element {
   const [settings, dispatch] = useSettings();
+  const { timers } = settings;
 
-  const [timers, setTimers] = useState(
-    settings.timers.reduce<Record<string, string>>((prev, curr) => {
-      prev[curr.label] = (curr.time / 60).toString();
-      return prev;
-    }, {}),
-  );
-
-  const [colors, setColors] = useState(
-    [...colorsList].map(color =>
-      color.value === settings.selectedColor
-        ? { ...color, checked: true }
-        : { ...color, checked: false },
-    ),
-  );
+  const [selectedColor, setSelectedColor] = useState(settings.selectedColor);
 
   const soundsList = Object.keys(sounds);
-  const [currentSound, setCurrentSound] = useState<Sounds>(settings.sound.name);
+  const [currentSound, setCurrentSound] = useState<Sound>(settings.sound.name);
   const [volume, setVolume] = useState(settings.sound.volume);
   const soundSrc = `${sounds[currentSound]}`;
   const { play } = useSound(soundSrc, { volume, duration: 500 });
@@ -61,7 +46,7 @@ export default function SettingsModal({
     });
 
     const selectedColor = colors.find(color => color.checked)?.value as Colors;
-    if (selectedColor !== settings.selectedColor) {
+    if (selectedColor !== settings.selectedColor.hex) {
       dispatch({
         type: 'updateColor',
         payload: selectedColor,
@@ -102,19 +87,20 @@ export default function SettingsModal({
     setTimers({ ...timers, [label]: value });
   }
 
-  function handleChangeColor(e: React.ChangeEvent<HTMLInputElement>) {
-    const selectedColor = e.target.value;
-    setColors(
-      colors.map(color =>
-        color.value === selectedColor
-          ? { ...color, checked: true }
-          : { ...color, checked: false },
-      ),
-    );
+  function handleChangeColor(color: Colors) {
+    setSelectedColor(color);
+
+    // setColors(
+    //   colors.map(color =>
+    //     color.value === selectedColor
+    //       ? { ...color, checked: true }
+    //       : { ...color, checked: false },
+    //   ),
+    // );
   }
 
   function handleSoundChange(value: string) {
-    setCurrentSound(value as Sounds);
+    setCurrentSound(value as Sound);
     play();
   }
 
@@ -194,52 +180,10 @@ export default function SettingsModal({
                 </div>
               </li>
               <li className={styles.settingsItem}>
-                <div className={styles.colors}>
-                  <span className={styles.subHeading}>Color</span>
-                  <div className={styles.colorsInputs} role="radiogroup">
-                    {colors.map(({ name, value, checked }) => (
-                      <label
-                        className={styles.radio}
-                        key={name}
-                        data-testid={value}
-                      >
-                        <span className={styles.radioInput}>
-                          <input
-                            type="radio"
-                            name="color"
-                            value={value}
-                            checked={checked}
-                            onChange={handleChangeColor}
-                          />
-                          <span
-                            className={styles.radioControl}
-                            style={{ backgroundColor: value }}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="icon icon-tabler icon-tabler-check"
-                              width="18"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              strokeWidth="2"
-                              stroke="#171931"
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path
-                                stroke="none"
-                                d="M0 0h24v24H0z"
-                                fill="none"
-                              />
-                              <path d="M5 12l5 5l10 -10" />
-                            </svg>
-                          </span>
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                <ColorPicker
+                  selectedColor={selectedColor}
+                  onColorChange={handleChangeColor}
+                />
               </li>
               <li className={styles.settingsItem}>
                 <div className={styles.sound}>

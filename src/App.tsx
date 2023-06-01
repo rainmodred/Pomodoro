@@ -124,8 +124,9 @@ function NewPomodoro() {
               <button
                 onClick={() => handleTabSwitch(timerName)}
                 style={{
-                  textDecoration: `${timerName === state.timerName ? 'underline' : ''
-                    }`,
+                  textDecoration: `${
+                    timerName === state.timerName ? 'underline' : ''
+                  }`,
                 }}
               >
                 {timerName}
@@ -152,7 +153,7 @@ export default function App() {
   return (
     <SettingsProvider>
       <Pomodoro />
-      <NewPomodoro />
+      {/* <NewPomodoro /> */}
     </SettingsProvider>
   );
 }

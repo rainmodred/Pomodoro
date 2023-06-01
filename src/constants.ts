@@ -4,17 +4,17 @@ const sounds = {
   'Digital Alarm': './audio/Digital Alarm.mp3',
 };
 
-type Sounds = keyof typeof sounds;
-type Colors = '#f67174' | '#75f3f7' | '#d880f5';
+type Sound = keyof typeof sounds;
 
-const colors: {
-  name: string;
-  value: Colors;
-}[] = [
-  { name: 'red', value: '#f67174' },
-  { name: 'blue', value: '#75f3f7' },
-  { name: 'purple', value: '#d880f5' },
-];
+const defaultColors = [
+  { name: 'red', hex: '#f67174' },
+  { name: 'blue', hex: '#75f3f7' },
+  { name: 'purple', hex: '#d880f5' },
+] as const;
 
-export { sounds, colors };
-export type { Sounds, Colors };
+type Color = typeof defaultColors[number];
+type ColorName = typeof defaultColors[number]['name'];
+type Hex = typeof defaultColors[number]['hex'];
+
+export { sounds, defaultColors };
+export type { Sound, Color, ColorName, Hex };

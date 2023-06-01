@@ -76,58 +76,6 @@
   box-shadow: 0 0 0 0.05em #000, 0 0 0.15em 0.1em currentColor;
 }
 
-.colors {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.colorsInputs {
-  display: flex;
-}
-
-.radio {
-  display: grid;
-  grid-template-columns: min-content auto;
-  grid-gap: 0.5em;
-}
-
-.radioInput {
-  display: flex;
-}
-
-.radioInput input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.radioInput input:focus + .radioControl {
-  box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
-}
-
-.radioControl svg {
-  display: none;
-}
-
-.radioInput input:checked + .radioControl svg {
-  display: block;
-}
-
-.radioControl {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 2em;
-  height: 2em;
-  border-radius: 50%;
-  background-color: teal;
-}
-.radioInput:focus + .radioControl {
-  box-shadow: 0 0 0 0.05em #fff, 0 0 0.15em 0.1em currentColor;
-}
-
 .soundItem {
   padding: 8px 0;
   display: flex;
