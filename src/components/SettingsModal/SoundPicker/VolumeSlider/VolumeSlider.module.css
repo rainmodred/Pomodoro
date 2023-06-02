@@ -24,12 +24,12 @@
   position: relative;
   flex-grow: 1;
   border-radius: 9999px;
-  height: 3px;
+  height: 2px;
 }
 
 .sliderRange {
   position: absolute;
-  background-color: white;
+  background-color: black;
   border-radius: 9999px;
   height: 100%;
 }

@@ -10,13 +10,6 @@
   margin-bottom: 8px;
 }
 
-.subHeading {
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  padding: 10px 0;
-  font-weight: bold;
-}
-
 .form {
   display: flex;
   flex-direction: column;
@@ -76,22 +69,6 @@
   box-shadow: 0 0 0 0.05em #000, 0 0 0.15em 0.1em currentColor;
 }
 
-.soundItem {
-  padding: 8px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  column-gap: 4rem;
-}
-
-.soundSubheading {
-  font-size: 0.75rem;
-}
-
-.soundSelect {
-  font-size: 0.875rem;
-}
-
 .autoStartWrapper {
   display: flex;
   justify-content: space-between;
@@ -107,7 +84,7 @@
 
 /* Radix Dialog */
 .dialogOverlay {
-  background-color: var(--blackA9);
+  /* background-color: var(--blackA9); */
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -149,8 +126,8 @@
   right: 10px;
 }
 .iconButton:hover {
-  background-color: var(--violet4);
+  /* background-color: var(--violet4); */
 }
 .iconButton:focus {
-  box-shadow: 0 0 0 2px var(--violet7);
+  /* box-shadow: 0 0 0 2px var(--violet7); */
 }

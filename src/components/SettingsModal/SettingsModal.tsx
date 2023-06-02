@@ -4,13 +4,13 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { ChevronDownIcon, Cross2Icon } from '@radix-ui/react-icons';
 
 import { initialSettings, useSettings } from '../../context/SettingsContext';
-import ColorPicker from './ColorPicker';
+import ColorPicker from './ColorPicker/ColorPicker';
 import NumberInput from '../NumberInput/NumberInput';
-import VolumeSlider from '../VolumeSlider/VolumeSlider';
 import useSound from '../Pomodoro/useSound';
 import { Colors, sounds, Sound } from '../../constants';
 
 import styles from './SettingsModal.module.css';
+import SoundPicker from './SoundPicker/SoundPicker';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -22,8 +22,8 @@ export default function SettingsModal({
   close,
 }: SettingsModalProps): JSX.Element {
   const [settings, dispatch] = useSettings();
-  const { timers } = settings;
 
+  const [timers, setTimers] = useState(settings.timers);
   const [selectedColor, setSelectedColor] = useState(settings.selectedColor);
 
   const soundsList = Object.keys(sounds);
@@ -45,7 +45,7 @@ export default function SettingsModal({
       })),
     });
 
-    const selectedColor = colors.find(color => color.checked)?.value as Colors;
+    const selectedColor = colors.find(color => color.checked)?.value as Color;
     if (selectedColor !== settings.selectedColor.hex) {
       dispatch({
         type: 'updateColor',
@@ -84,19 +84,12 @@ export default function SettingsModal({
   }
 
   function handleTimerChange(label: string, value: string) {
+    console.log('label', label, value);
     setTimers({ ...timers, [label]: value });
   }
 
-  function handleChangeColor(color: Colors) {
+  function handleColorChange(color: Colors) {
     setSelectedColor(color);
-
-    // setColors(
-    //   colors.map(color =>
-    //     color.value === selectedColor
-    //       ? { ...color, checked: true }
-    //       : { ...color, checked: false },
-    //   ),
-    // );
   }
 
   function handleSoundChange(value: string) {
@@ -165,7 +158,7 @@ export default function SettingsModal({
           <form className={styles.form} onSubmit={handleApply}>
             <ul>
               <li className={styles.settingsItem}>
-                <span className={styles.subHeading}>Time (minutes)</span>
+                <h3 className="subHeading">Time (minutes)</h3>
                 <div className={styles.time}>
                   {Object.entries(timers).map(([label, time]) => (
                     <NumberInput
@@ -182,38 +175,20 @@ export default function SettingsModal({
               <li className={styles.settingsItem}>
                 <ColorPicker
                   selectedColor={selectedColor}
-                  onColorChange={handleChangeColor}
+                  onColorChange={handleColorChange}
                 />
               </li>
               <li className={styles.settingsItem}>
-                <div className={styles.sound}>
-                  <div>
-                    <div className={styles.soundItem}>
-                      <span className={styles.subHeading}>Sound</span>
-                      <Select
-                        value={currentSound}
-                        onValueChange={value => handleSoundChange(value)}
-                      >
-                        {soundsList.map(value => (
-                          <SelectItem key={value} value={value}>
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </div>
-                    <div className={styles.soundItem}>
-                      <span className={styles.subHeading}>Volume</span>
-                      <VolumeSlider
-                        onChange={handleVolumeChange}
-                        volume={volume}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <SoundPicker
+                  currentSound={currentSound}
+                  onSoundChange={handleSoundChange}
+                  volume={volume}
+                  onVolumeChange={handleVolumeChange}
+                />
               </li>
               <li className={styles.settingsItem}>
                 <div className={styles.autoStartWrapper}>
-                  <label htmlFor="autoStart" className={styles.subHeading}>
+                  <label htmlFor="autoStart" className="subHeading">
                     Auto Switch
                   </label>
                   <input
@@ -226,7 +201,7 @@ export default function SettingsModal({
               </li>
               <li className={styles.settingsItem}>
                 <div className={styles.autoStartWrapper}>
-                  <label htmlFor="notification" className={styles.subHeading}>
+                  <label htmlFor="notification" className="subHeading">
                     Notification
                   </label>
                   <input

@@ -1,4 +1,4 @@
-import { Color, defaultColors } from '../../constants';
+import { Color, defaultColors } from '../../../constants';
 
 import styles from './ColorPicker.module.css';
 
@@ -10,7 +10,7 @@ interface Props {
 export default function ColorPicker({ selectedColor, onColorChange }: Props) {
   return (
     <div className={styles.colors}>
-      <span className={styles.subHeading}>Color</span>
+      <h3 className="subHeading">Color</h3>
       <div className={styles.colorsInputs} role="radiogroup">
         {defaultColors.map(({ name, hex }) => (
           <label className={styles.radio} key={name} data-testid={hex}>

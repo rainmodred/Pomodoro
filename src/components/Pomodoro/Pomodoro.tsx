@@ -118,6 +118,8 @@ export default function Pomodoro(): JSX.Element {
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
 
+  const initialTime = timers[timerState.timerName];
+
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Pomodoro</h1>
@@ -142,7 +144,7 @@ export default function Pomodoro(): JSX.Element {
         <div className={styles.tabPanel}>
           {' '}
           <Timer
-            initialTime={timers[timerState.timerName]}
+            initialTime={initialTime}
             statusText={timerState.status === 'paused' ? 'start' : 'pause'}
             currentTime={timerState.currentTime}
             toggle={toggleTimer}
