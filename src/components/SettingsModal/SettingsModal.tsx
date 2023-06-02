@@ -23,10 +23,13 @@ export default function SettingsModal({
 }: SettingsModalProps): JSX.Element {
   const [settings, dispatch] = useSettings();
 
-  const [timers, setTimers] = useState(settings.timers);
+  const [timers, setTimers] = useState(
+    Object.fromEntries(
+      Object.entries(settings.timers).map(([key, value]) => [key, value / 60]),
+    ),
+  );
   const [selectedColor, setSelectedColor] = useState(settings.selectedColor);
 
-  const soundsList = Object.keys(sounds);
   const [currentSound, setCurrentSound] = useState<Sound>(settings.sound.name);
   const [volume, setVolume] = useState(settings.sound.volume);
   const soundSrc = `${sounds[currentSound]}`;
@@ -45,8 +48,7 @@ export default function SettingsModal({
       })),
     });
 
-    const selectedColor = colors.find(color => color.checked)?.value as Color;
-    if (selectedColor !== settings.selectedColor.hex) {
+    if (selectedColor.hex !== settings.selectedColor.hex) {
       dispatch({
         type: 'updateColor',
         payload: selectedColor,
@@ -84,7 +86,6 @@ export default function SettingsModal({
   }
 
   function handleTimerChange(label: string, value: string) {
-    console.log('label', label, value);
     setTimers({ ...timers, [label]: value });
   }
 

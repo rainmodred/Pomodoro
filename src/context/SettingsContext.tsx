@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useReducer } from 'react';
 import { getFromStorage, setToStorage } from '../utils/utils';
 import { Sound, defaultColors } from '../constants';
 
-let root = document.documentElement;
+const root = document.documentElement;
 
 const defaultTimers = {
   pomodoro: 1500,
@@ -14,7 +14,7 @@ export type DefaultTimers = typeof defaultTimers;
 
 type Settings = {
   timers: DefaultTimers;
-  selectedColor: typeof defaultColors[number];
+  selectedColor: (typeof defaultColors)[number];
   sound: {
     name: Sound;
     volume: number;
@@ -67,7 +67,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
   let updatedSettings: Settings | null = null;
 
   switch (action.type) {
-    case 'updateTimers':
+    case 'updateTimers': {
       const timers = action.payload;
       updatedSettings = {
         ...state,
@@ -75,6 +75,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       };
       setToStorage('settings', updatedSettings);
       return updatedSettings;
+    }
     case 'updateColor':
       const color = action.payload;
       updatedSettings = {
@@ -108,7 +109,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
 
       return updatedSettings;
     case 'updateNotification':
-      let notification = action.payload;
+      const notification = action.payload;
       updatedSettings = {
         ...state,
         notification,
