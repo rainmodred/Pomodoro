@@ -1,4 +1,6 @@
-function getFromStrorage(key: string) {
+import { Sound, sounds } from './constants';
+
+function getFromStorage(key: string) {
   const data = window.localStorage.getItem(key);
   if (!data) {
     return null;
@@ -25,4 +27,28 @@ function timeToMinSec(time: number) {
   };
 }
 
-export { getFromStrorage, setToStorage, timeToMinSec };
+function convertToSeconds(time: number) {
+  return time * 60;
+}
+
+function sendNotification() {
+  if (window.Notification && Notification.permission !== 'denied') {
+    new Notification('Pomodoro', {
+      body: 'Your time is up!',
+      silent: true,
+    });
+  }
+}
+
+function getSoundSrc(soundName: Sound) {
+  return sounds[soundName];
+}
+
+export {
+  getSoundSrc,
+  getFromStorage,
+  setToStorage,
+  timeToMinSec,
+  convertToSeconds,
+  sendNotification,
+};
