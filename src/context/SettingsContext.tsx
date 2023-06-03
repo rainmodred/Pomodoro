@@ -1,19 +1,20 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { getFromStrorage, setToStorage } from '../utils/utils';
-import { Colors, Sounds } from '../constants';
+import { getFromStorage, setToStorage } from '../utils/utils';
+import {
+  Color,
+  Sound,
+  Timers,
+  defaultColors,
+  defaultTimers,
+} from '../utils/constants';
 
-let root = document.documentElement;
-
-type TimerType = {
-  label: string;
-  time: number;
-};
+const root = document.documentElement;
 
 type Settings = {
-  timers: TimerType[];
-  selectedColor: Colors;
+  timers: Timers;
+  selectedColor: (typeof defaultColors)[number];
   sound: {
-    name: Sounds;
+    name: Sound;
     volume: number;
   };
   autostart: boolean;
@@ -24,17 +25,17 @@ type ACTIONTYPE =
   | {
       type: 'updateSound';
       payload: {
-        name: Sounds;
+        name: Sound;
         volume: number;
       };
     }
   | {
       type: 'updateColor';
-      payload: Colors;
+      payload: Color;
     }
   | {
       type: 'updateTimers';
-      payload: TimerType[];
+      payload: Timers;
     }
   | {
       type: 'updateAutostart';
@@ -46,30 +47,25 @@ type ACTIONTYPE =
     };
 
 export const initialSettings: Settings = {
-  timers: [
-    { label: 'pomodoro', time: 1500 },
-    { label: 'short break', time: 300 },
-    { label: 'long break', time: 600 },
-  ],
-
-  selectedColor: '#f67174',
+  timers: defaultTimers,
+  selectedColor: defaultColors[0],
   sound: {
     name: 'Analog Alarm',
     volume: 50,
   },
-  autostart: true,
+  autostart: false,
   notification: false,
 };
 
 function getInitialState() {
-  return getFromStrorage('settings') || initialSettings;
+  return getFromStorage('settings') || initialSettings;
 }
 
 function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
   let updatedSettings: Settings | null = null;
 
   switch (action.type) {
-    case 'updateTimers':
+    case 'updateTimers': {
       const timers = action.payload;
       updatedSettings = {
         ...state,
@@ -77,7 +73,8 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       };
       setToStorage('settings', updatedSettings);
       return updatedSettings;
-    case 'updateColor':
+    }
+    case 'updateColor': {
       const color = action.payload;
       updatedSettings = {
         ...state,
@@ -86,8 +83,8 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-
-    case 'updateSound':
+    }
+    case 'updateSound': {
       const { name, volume } = action.payload;
       updatedSettings = {
         ...state,
@@ -99,8 +96,8 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-
-    case 'updateAutostart':
+    }
+    case 'updateAutostart': {
       const autostart = action.payload;
       updatedSettings = {
         ...state,
@@ -109,8 +106,9 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-    case 'updateNotification':
-      let notification = action.payload;
+    }
+    case 'updateNotification': {
+      const notification = action.payload;
       updatedSettings = {
         ...state,
         notification,
@@ -119,6 +117,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
+    }
 
     default:
       throw new Error();
@@ -144,8 +143,8 @@ function SettingsProvider({ children }: SettingsProviderProps): JSX.Element {
   }, []);
 
   useEffect(() => {
-    root.style.setProperty('--color-main', settings.selectedColor);
-  }, [settings.selectedColor]);
+    root.style.setProperty('--color-main', settings.selectedColor.hex);
+  }, [settings.selectedColor.hex]);
 
   return (
     <SettingsContext.Provider value={[settings, dispatch]}>
