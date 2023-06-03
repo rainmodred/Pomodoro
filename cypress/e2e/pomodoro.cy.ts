@@ -2,7 +2,7 @@
 
 describe('pomodoro app', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:4173');
+    cy.visit('http://localhost:4173/Pomodoro');
   });
 
   it('displays heading and pomodoro timer by default', () => {
@@ -55,37 +55,22 @@ describe('pomodoro app', () => {
     cy.findByTestId('settings').click();
     cy.findByRole('spinbutton', {
       name: /pomodoro/i,
-    })
-      .clear()
-      .type(30);
+    }).clear();
+    cy.findByRole('spinbutton', {
+      name: /pomodoro/i,
+    }).type(30);
+
     cy.findByRole('spinbutton', {
       name: /short break/i,
-    })
-      .clear()
-      .type(10);
+    }).clear();
+    cy.findByRole('spinbutton', {
+      name: /short break/i,
+    }).type(10);
 
     cy.findByTestId('#d880f5').click();
     cy.findByRole('button', {
       name: /apply/i,
     }).click();
-    // .should(() => {
-    //   expect(
-    //     JSON.parse(window.localStorage.getItem('settings')),
-    //   ).to.deep.equal({
-    //     timers: [
-    //       { label: 'pomodoro', time: 1800 },
-    //       { label: 'short break', time: 600 },
-    //       { label: 'long break', time: 600 },
-    //     ],
-    //     selectedColor: '#d880f5',
-    //     sound: {
-    //       name: 'Analog Alarm',
-    //       volume: 50,
-    //     },
-    //     autostart: true,
-    //     notification: true,
-    //   });
-    // });
     cy.findByTestId('clock').should('have.text', '30:00');
     cy.findByRole('button', {
       name: /short break/i,
