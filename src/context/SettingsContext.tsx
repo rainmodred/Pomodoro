@@ -55,7 +55,7 @@ export const initialSettings: Settings = {
     name: 'Analog Alarm',
     volume: 50,
   },
-  autostart: true,
+  autostart: false,
   notification: false,
 };
 

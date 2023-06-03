@@ -6,7 +6,6 @@ import { ChevronDownIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { initialSettings, useSettings } from '../../context/SettingsContext';
 import ColorPicker from './ColorPicker/ColorPicker';
 import NumberInput from '../NumberInput/NumberInput';
-import useSound from '../Pomodoro/useSound';
 import { Colors, sounds, Sound } from '../../constants';
 
 import styles from './SettingsModal.module.css';
@@ -167,7 +166,7 @@ export default function SettingsModal({
               <li className={styles.settingsItem}>
                 <div className={styles.autoStartWrapper}>
                   <label htmlFor="autoStart" className="subHeading">
-                    Auto Switch
+                    Auto Start
                   </label>
                   <input
                     id="autoStart"

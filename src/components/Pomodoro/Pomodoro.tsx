@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Timers, useSettings } from '../../context/SettingsContext';
 import SettingsModal from '../SettingsModal/SettingsModal';
-import useTimer from './useTimer';
 import useSound from './useSound';
 import Timer from '../Timer/Timer';
 import { sounds } from '../../constants';
@@ -20,7 +19,7 @@ function convertToSeconds(time: number) {
   return time * 60;
 }
 
-export default function Pomodoro(): JSX.Element {
+function useTimer() {
   const [{ timers, sound, autostart }] = useSettings();
 
   const [timerState, setTimerState] = useState<TimerState>({
@@ -29,13 +28,20 @@ export default function Pomodoro(): JSX.Element {
     currentTime: convertToSeconds(timers['pomodoro']),
   });
 
-  const [autoStart, setAutoStart] = useState(false);
+  const { play } = useSound({
+    volume: sound.volume,
+    duration: 2000,
+  });
 
   const timerId = useRef(0);
   const usedShortBreaks = useRef(0);
 
   useEffect(() => {
-    if (autoStart) {
+    resetTimer(timerState.timerName);
+  }, [timers]);
+
+  useEffect(() => {
+    if (autostart) {
       startTimer();
     }
   }, [timerState.timerName]);
@@ -50,64 +56,60 @@ export default function Pomodoro(): JSX.Element {
       const timeInSeconds = Math.round(elapsedTime / 1000);
 
       if (timeInSeconds !== lastTime.current) {
-        console.log('ufck', elapsedTime, timeInSeconds);
         lastTime.current = timeInSeconds;
         setTimerState(state => {
           const { minutes, seconds } = timeToMinSec(state.currentTime - 1);
           document.title = `${minutes}:${seconds} ${state.currentTime} ${lastTime.current} ${timeInSeconds}`;
+
+          if (state.currentTime === 0) {
+            play();
+            window.clearInterval(timerId.current);
+            if (
+              state.timerName === 'short break' ||
+              state.timerName === 'long break'
+            ) {
+              usedShortBreaks.current =
+                state.timerName === 'short break' ? 1 : 0;
+              return {
+                status: 'paused',
+                timerName: 'pomodoro',
+                currentTime: timers['pomodoro'],
+              };
+            }
+            if (state.timerName === 'pomodoro') {
+              const nextTimerName =
+                usedShortBreaks.current === 1 ? 'long break' : 'short break';
+              return {
+                status: 'paused',
+                timerName: nextTimerName,
+                currentTime: timers[nextTimerName],
+              };
+            }
+            throw new Error('wat');
+          }
+
           return {
             ...state,
             currentTime: state.currentTime - 1,
           };
-
-          // if (state.currentTime === 0) {
-          //   window.clearInterval(timerId.current);
-          //   if (
-          //     state.timerName === 'short break' ||
-          //     state.timerName === 'long break'
-          //   ) {
-          //     usedShortBreaks.current = state.timerName === 'short break' ? 1 : 0;
-          //     return {
-          //       status: 'paused',
-          //       timerName: 'pomodoro',
-          //       currentTime: timers['pomodoro'],
-          //     };
-          //   }
-          //   if (state.timerName === 'pomodoro') {
-          //     const nextTimerName =
-          //       usedShortBreaks.current === 1 ? 'long break' : 'short break';
-          //     return {
-          //       status: 'paused',
-          //       timerName: nextTimerName,
-          //       currentTime: timers[nextTimerName],
-          //     };
-          //   }
-          //   throw new Error('wat');
-          // }
-
-          // return {
-          //   ...state,
-          //   currentTime: state.currentTime - 1,
-          // };
-          return state;
         });
       }
     }, 100);
   }
 
-  function resetTimer() {
+  function resetTimer(timerName: keyof Timers = 'pomodoro') {
     window.clearInterval(timerId.current);
     setTimerState({
-      timerName: 'pomodoro',
+      timerName,
       status: 'paused',
-      currentTime: convertToSeconds(timers['pomodoro']),
+      currentTime: convertToSeconds(timers[timerName]),
     });
   }
 
   function toggleTimer() {
     console.log('toggle', Date.now());
     if (timerState.currentTime === 0) {
-      throw new Error('not implemented');
+      return;
     }
 
     if (timerState.status === 'paused') {
@@ -124,18 +126,20 @@ export default function Pomodoro(): JSX.Element {
     }
   }
 
-  function handleTabSwitch(timerName: keyof typeof timers) {
-    window.clearInterval(timerId.current);
-    setTimerState({
-      timerName,
-      status: 'paused',
-      currentTime: timers[timerName],
-    });
-  }
-
   useEffect(() => {
     return () => window.clearInterval(timerId.current);
   }, []);
+
+  return { timerState, toggleTimer, resetTimer };
+}
+
+export default function Pomodoro(): JSX.Element {
+  const [{ timers }] = useSettings();
+  const { timerState, toggleTimer, resetTimer } = useTimer();
+
+  function handleTabSwitch(timerName: keyof typeof timers) {
+    resetTimer(timerName);
+  }
 
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
@@ -171,7 +175,7 @@ export default function Pomodoro(): JSX.Element {
             statusText={timerState.status === 'paused' ? 'start' : 'pause'}
             currentTime={timerState.currentTime}
             toggle={toggleTimer}
-            reset={resetTimer}
+            reset={() => resetTimer('pomodoro')}
           />
         </div>
       </div>

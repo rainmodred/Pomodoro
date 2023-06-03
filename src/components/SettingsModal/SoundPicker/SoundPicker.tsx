@@ -20,8 +20,7 @@ export default function SoundPicker({
 }: SoundPicker) {
   const soundsList = Object.keys(sounds);
 
-  const soundSrc = `${sounds[currentSound]}`;
-  const { play } = useSound(soundSrc, { volume, duration: 5000 });
+  const { play } = useSound({ volume, duration: 5000 });
 
   function handleSoundChange(value: Sound) {
     play();

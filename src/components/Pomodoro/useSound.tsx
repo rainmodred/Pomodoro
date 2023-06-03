@@ -1,15 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { sounds } from '../../constants';
+import { useSettings } from '../../context/SettingsContext';
+
 interface UseSoundType {
   play: () => void;
 }
 
-export default function useSound(
-  src: string,
-  { volume, duration = 500 }: { volume: number; duration: number },
-): UseSoundType {
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function useSound({
+  volume,
+  duration = 500,
+}: {
+  volume: number;
+  duration: number;
+}): UseSoundType {
+  const [{ sound }] = useSettings();
+  const src = `${sounds[sound.name]}`;
 
+  const [isPlaying, setIsPlaying] = useState(false);
   const [audio] = useState(() => {
     const newAudio = new Audio(src);
     newAudio.volume = volume / 100;
