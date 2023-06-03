@@ -44,7 +44,6 @@ describe('Pomodoro', () => {
     expect(screen.getByTestId('settings')).toBeInTheDocument();
   });
 
-  //TODO
   it('should start timer on click', async () => {
     render(<Pomodoro />, { wrapper });
 
@@ -77,6 +76,26 @@ describe('Pomodoro', () => {
     expect(await screen.findByTestId('clock')).toHaveTextContent('23:20');
     await user.click(screen.getByTestId('toggle'));
     expect(screen.getByText('start')).toBeInTheDocument();
+  });
+
+  it('timer accuracy after unpause', async () => {
+    render(<Pomodoro />, { wrapper });
+
+    await user.click(screen.getByTestId('toggle'));
+
+    act(() => {
+      vi.advanceTimersByTime(100000);
+    });
+
+    await user.click(screen.getByTestId('toggle'));
+    await user.click(screen.getByTestId('toggle'));
+
+    act(() => {
+      vi.advanceTimersByTime(100000);
+    });
+    expect(screen.getByText('pause')).toBeInTheDocument();
+
+    expect(await screen.findByTestId('clock')).toHaveTextContent('21:40');
   });
 
   it('should reset timer on reset button click', async () => {
@@ -140,9 +159,6 @@ describe('Pomodoro', () => {
 
     await user.click(screen.getByText(/apply/i));
     expect(await screen.findByTestId('clock')).toHaveTextContent('20:00');
-  });
-  it('wat', () => {
-    expect(1).toBe(1);
   });
 
   it.todo('should change timers if autstart is true');
