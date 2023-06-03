@@ -24,7 +24,7 @@ export default function SoundPicker({
   const { play } = useSound(soundSrc, { volume, duration: 500 });
 
   function handleSoundChange(value: Sound) {
-    play(value);
+    play();
     onSoundChange(value);
   }
 

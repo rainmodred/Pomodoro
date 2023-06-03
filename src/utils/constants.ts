@@ -4,7 +4,7 @@ const defaultTimers = {
   'long break': 15,
 };
 
-export type Timers = typeof defaultTimers;
+type Timers = typeof defaultTimers;
 
 const sounds = {
   'Analog Alarm': './audio/Analog Alarm.mp3',

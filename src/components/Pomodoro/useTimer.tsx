@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-import { Timers, useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/SettingsContext';
 import {
   convertToSeconds,
   getSoundSrc,
@@ -8,6 +8,7 @@ import {
   timeToMinSec,
 } from '../../utils/utils';
 import useSound from './useSound';
+import { Timers } from '../../utils/constants';
 
 interface TimerState {
   timerName: keyof Timers;

@@ -4,11 +4,11 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 
 import { initialSettings, useSettings } from '../../context/SettingsContext';
 import ColorPicker from './ColorPicker/ColorPicker';
+import SoundPicker from './SoundPicker/SoundPicker';
 import NumberInput from '../ui/NumberInput/NumberInput';
-import { Color, Sound } from '../../constants';
+import { Color, Sound } from '../../utils/constants';
 
 import styles from './SettingsModal.module.css';
-import SoundPicker from './SoundPicker/SoundPicker';
 
 interface SettingsModalProps {
   isOpen: boolean;
