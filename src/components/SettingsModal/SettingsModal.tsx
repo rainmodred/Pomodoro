@@ -23,11 +23,7 @@ export default function SettingsModal({
 }: SettingsModalProps): JSX.Element {
   const [settings, dispatch] = useSettings();
 
-  const [timers, setTimers] = useState(
-    Object.fromEntries(
-      Object.entries(settings.timers).map(([key, value]) => [key, value / 60]),
-    ),
-  );
+  const [timers, setTimers] = useState({ ...settings.timers });
   const [selectedColor, setSelectedColor] = useState(settings.selectedColor);
 
   const [currentSound, setCurrentSound] = useState<Sound>(settings.sound.name);
@@ -123,20 +119,8 @@ export default function SettingsModal({
     const { timers, selectedColor, sound, autostart, notification } =
       initialSettings;
 
-    setTimers(
-      timers.reduce<Record<string, string>>((prev, curr) => {
-        prev[curr.label] = (curr.time / 60).toString();
-        return prev;
-      }, {}),
-    );
-    setColors(
-      [...colorsList].map(color =>
-        color.value === selectedColor
-          ? { ...color, checked: true }
-          : { ...color, checked: false },
-      ),
-    );
-
+    setTimers({ ...timers });
+    setSelectedColor(selectedColor);
     setCurrentSound(sound.name);
     setVolume(sound.volume);
     setAutostart(autostart);
@@ -167,7 +151,7 @@ export default function SettingsModal({
                       label={label}
                       max={90}
                       min={1}
-                      value={time}
+                      value={time.toString()}
                       onChange={handleTimerChange}
                     />
                   ))}

@@ -5,9 +5,9 @@ import { Sound, defaultColors } from '../constants';
 const root = document.documentElement;
 
 const defaultTimers = {
-  pomodoro: 1500,
-  'short break': 300,
-  'long break': 600,
+  pomodoro: 25,
+  'short break': 5,
+  'long break': 15,
 };
 
 export type DefaultTimers = typeof defaultTimers;

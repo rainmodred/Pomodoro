@@ -16,13 +16,17 @@ interface TimerState {
   currentTime: number;
 }
 
+function convertToSeconds(time: number) {
+  return time * 60;
+}
+
 export default function Pomodoro(): JSX.Element {
   const [{ timers, sound, autostart }] = useSettings();
 
   const [timerState, setTimerState] = useState<TimerState>({
     timerName: 'pomodoro',
     status: 'paused',
-    currentTime: timers['pomodoro'],
+    currentTime: convertToSeconds(timers['pomodoro']),
   });
 
   const [autoStart, setAutoStart] = useState(false);
@@ -118,7 +122,7 @@ export default function Pomodoro(): JSX.Element {
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
 
-  const initialTime = timers[timerState.timerName];
+  const initialTime = convertToSeconds(timers[timerState.timerName]);
 
   return (
     <div className={styles.container}>
