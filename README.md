@@ -20,8 +20,10 @@
 
 <!-- This section should list any major frameworks that you built your project using. Here are a few examples.-->
 
+- [Vite](https://vitejs.dev/)
 - [React](https://reactjs.org/)
 - [Typescript](https://www.typescriptlang.org/)
+- [Radix](https://www.radix-ui.com/)
 
 ## How To Use
 
@@ -37,5 +39,5 @@ $ git clone https://github.com/rainmodred/Pomodoro.git
 $ npm install
 
 # Run the app
-$ npm start
+$ npm run dev
 ```
