@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { DefaultTimers, useSettings } from '../../context/SettingsContext';
+import { Timers, useSettings } from '../../context/SettingsContext';
 import SettingsModal from '../SettingsModal/SettingsModal';
 import useTimer from './useTimer';
 import useSound from './useSound';
@@ -11,7 +11,7 @@ import { timeToMinSec } from '../../utils/utils';
 import styles from './Pomodoro.module.css';
 
 interface TimerState {
-  timerName: keyof DefaultTimers;
+  timerName: keyof Timers;
   status: 'started' | 'paused';
   currentTime: number;
 }
@@ -40,42 +40,59 @@ export default function Pomodoro(): JSX.Element {
     }
   }, [timerState.timerName]);
 
-  function startTimer() {
-    console.log('started');
-    timerId.current = window.setInterval(() => {
-      console.log('tick');
-      setTimerState(state => {
-        if (state.currentTime === 0) {
-          window.clearInterval(timerId.current);
-          if (
-            state.timerName === 'short break' ||
-            state.timerName === 'long break'
-          ) {
-            usedShortBreaks.current = state.timerName === 'short break' ? 1 : 0;
-            return {
-              status: 'paused',
-              timerName: 'pomodoro',
-              currentTime: timers['pomodoro'],
-            };
-          }
-          if (state.timerName === 'pomodoro') {
-            const nextTimerName =
-              usedShortBreaks.current === 1 ? 'long break' : 'short break';
-            return {
-              status: 'paused',
-              timerName: nextTimerName,
-              currentTime: timers[nextTimerName],
-            };
-          }
-          throw new Error('wat');
-        }
+  const startTime = useRef(0);
+  const lastTime = useRef(0);
 
-        return {
-          ...state,
-          currentTime: state.currentTime - 1,
-        };
-      });
-    }, 1000);
+  function startTimer() {
+    console.log('started', Date.now());
+    timerId.current = window.setInterval(() => {
+      const elapsedTime = Date.now() - startTime.current;
+      const timeInSeconds = Math.round(elapsedTime / 1000);
+
+      if (timeInSeconds !== lastTime.current) {
+        console.log('ufck', elapsedTime, timeInSeconds);
+        lastTime.current = timeInSeconds;
+        setTimerState(state => {
+          const { minutes, seconds } = timeToMinSec(state.currentTime - 1);
+          document.title = `${minutes}:${seconds} ${state.currentTime} ${lastTime.current} ${timeInSeconds}`;
+          return {
+            ...state,
+            currentTime: state.currentTime - 1,
+          };
+
+          // if (state.currentTime === 0) {
+          //   window.clearInterval(timerId.current);
+          //   if (
+          //     state.timerName === 'short break' ||
+          //     state.timerName === 'long break'
+          //   ) {
+          //     usedShortBreaks.current = state.timerName === 'short break' ? 1 : 0;
+          //     return {
+          //       status: 'paused',
+          //       timerName: 'pomodoro',
+          //       currentTime: timers['pomodoro'],
+          //     };
+          //   }
+          //   if (state.timerName === 'pomodoro') {
+          //     const nextTimerName =
+          //       usedShortBreaks.current === 1 ? 'long break' : 'short break';
+          //     return {
+          //       status: 'paused',
+          //       timerName: nextTimerName,
+          //       currentTime: timers[nextTimerName],
+          //     };
+          //   }
+          //   throw new Error('wat');
+          // }
+
+          // return {
+          //   ...state,
+          //   currentTime: state.currentTime - 1,
+          // };
+          return state;
+        });
+      }
+    }, 100);
   }
 
   function resetTimer() {
@@ -83,16 +100,18 @@ export default function Pomodoro(): JSX.Element {
     setTimerState({
       timerName: 'pomodoro',
       status: 'paused',
-      currentTime: timers['pomodoro'],
+      currentTime: convertToSeconds(timers['pomodoro']),
     });
   }
 
   function toggleTimer() {
+    console.log('toggle', Date.now());
     if (timerState.currentTime === 0) {
       throw new Error('not implemented');
     }
 
     if (timerState.status === 'paused') {
+      startTime.current = Date.now();
       setTimerState(state => ({ ...state, status: 'started' }));
       startTimer();
       return;

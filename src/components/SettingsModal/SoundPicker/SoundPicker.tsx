@@ -3,6 +3,7 @@ import { Sound, sounds } from '../../../constants';
 import VolumeSlider from './VolumeSlider/VolumeSlider';
 
 import styles from './SoundPicker.module.css';
+import useSound from '../../Pomodoro/useSound';
 
 interface SoundPicker {
   currentSound: Sound;
@@ -19,6 +20,19 @@ export default function SoundPicker({
 }: SoundPicker) {
   const soundsList = Object.keys(sounds);
 
+  const soundSrc = `${sounds[currentSound]}`;
+  const { play } = useSound(soundSrc, { volume, duration: 5000 });
+
+  function handleSoundChange(value: Sound) {
+    play();
+    onSoundChange(value);
+  }
+
+  function handleVolumeChange(volume: number) {
+    play();
+    onVolumeChange(volume);
+  }
+
   return (
     <div className={styles.sound}>
       <div>
@@ -26,7 +40,7 @@ export default function SoundPicker({
           <h3 className="subHeading">Sound</h3>
           <Select
             value={currentSound}
-            onValueChange={value => onSoundChange(value as Sound)}
+            onValueChange={value => handleSoundChange(value as Sound)}
           >
             {soundsList.map(value => (
               <SelectItem key={value} value={value}>
@@ -37,7 +51,7 @@ export default function SoundPicker({
         </div>
         <div className={styles.soundItem}>
           <h3 className="subHeading">Volume</h3>
-          <VolumeSlider onChange={onVolumeChange} volume={volume} />
+          <VolumeSlider onChange={handleVolumeChange} volume={volume} />
         </div>
       </div>
     </div>

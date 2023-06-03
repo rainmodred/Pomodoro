@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
 import { getFromStorage, setToStorage } from '../utils/utils';
-import { Sound, defaultColors } from '../constants';
+import { Color, Sound, defaultColors } from '../constants';
 
 const root = document.documentElement;
 
@@ -10,10 +10,10 @@ const defaultTimers = {
   'long break': 15,
 };
 
-export type DefaultTimers = typeof defaultTimers;
+export type Timers = typeof defaultTimers;
 
 type Settings = {
-  timers: DefaultTimers;
+  timers: Timers;
   selectedColor: (typeof defaultColors)[number];
   sound: {
     name: Sound;
@@ -33,11 +33,11 @@ type ACTIONTYPE =
     }
   | {
       type: 'updateColor';
-      payload: Colors;
+      payload: Color;
     }
   | {
       type: 'updateTimers';
-      payload: TimerType[];
+      payload: Timers;
     }
   | {
       type: 'updateAutostart';
@@ -76,7 +76,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
       return updatedSettings;
     }
-    case 'updateColor':
+    case 'updateColor': {
       const color = action.payload;
       updatedSettings = {
         ...state,
@@ -85,8 +85,8 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-
-    case 'updateSound':
+    }
+    case 'updateSound': {
       const { name, volume } = action.payload;
       updatedSettings = {
         ...state,
@@ -98,8 +98,8 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-
-    case 'updateAutostart':
+    }
+    case 'updateAutostart': {
       const autostart = action.payload;
       updatedSettings = {
         ...state,
@@ -108,7 +108,8 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
-    case 'updateNotification':
+    }
+    case 'updateNotification': {
       const notification = action.payload;
       updatedSettings = {
         ...state,
@@ -118,6 +119,7 @@ function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
       setToStorage('settings', updatedSettings);
 
       return updatedSettings;
+    }
 
     default:
       throw new Error();

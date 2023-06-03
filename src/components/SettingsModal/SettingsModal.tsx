@@ -28,8 +28,6 @@ export default function SettingsModal({
 
   const [currentSound, setCurrentSound] = useState<Sound>(settings.sound.name);
   const [volume, setVolume] = useState(settings.sound.volume);
-  const soundSrc = `${sounds[currentSound]}`;
-  const { play } = useSound(soundSrc, { volume, duration: 500 });
 
   const [autostart, setAutostart] = useState(settings.autostart);
   const [notification, setNotification] = useState(settings.notification);
@@ -38,10 +36,7 @@ export default function SettingsModal({
     e.preventDefault();
     dispatch({
       type: 'updateTimers',
-      payload: Object.entries(timers).map(([label, value]) => ({
-        label,
-        time: Number(value) * 60,
-      })),
+      payload: timers,
     });
 
     if (selectedColor.hex !== settings.selectedColor.hex) {
@@ -91,12 +86,10 @@ export default function SettingsModal({
 
   function handleSoundChange(value: string) {
     setCurrentSound(value as Sound);
-    play();
   }
 
   function handleVolumeChange(value: number) {
     setVolume(value);
-    play();
   }
 
   function handleAutostartChange(e: React.ChangeEvent<HTMLInputElement>) {
