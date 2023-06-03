@@ -1,45 +1,59 @@
 import { useState } from 'react';
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
-
-import '@reach/dialog/styles.css';
-import '@reach/tabs/styles.css';
 
 import Timer from '../Timer/Timer';
+import { useSettings } from '../../context/SettingsContext';
 import SettingsModal from '../SettingsModal/SettingsModal';
+import useTimer from './useTimer';
+import { convertToSeconds } from '../../utils/utils';
 
 import styles from './Pomodoro.module.css';
-import { useSettings } from '../../context/SettingsContext';
 
 export default function Pomodoro(): JSX.Element {
   const [{ timers }] = useSettings();
+  const { timerState, toggleTimer, resetTimer } = useTimer();
 
-  const [tabIndex, setTabIndex] = useState(0);
+  function handleTabSwitch(timerName: keyof typeof timers) {
+    resetTimer(timerName);
+  }
+
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
 
-  function handleTabsChange(index: number) {
-    setTabIndex(index);
-  }
+  const initialTime = convertToSeconds(timers[timerState.timerName]);
 
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Pomodoro</h1>
-      <Tabs index={tabIndex} onChange={handleTabsChange}>
-        <TabList>
-          {timers.map(({ label }) => (
-            <Tab key={label}>{label}</Tab>
-          ))}
-        </TabList>
-
-        <TabPanels>
-          {timers.map(({ label, time }, index) => (
-            <TabPanel key={index}>
-              <Timer id={label} time={time} index={index} tabIndex={tabIndex} />
-            </TabPanel>
-          ))}
-        </TabPanels>
-      </Tabs>
+      <div>
+        <div className={styles.tabList}>
+          {(Object.keys(timers) as Array<keyof typeof timers>).map(
+            timerName => {
+              return (
+                <button
+                  className={`${styles.tab} ${
+                    timerName === timerState.timerName ? styles.selectedTab : ''
+                  }`}
+                  key={timerName}
+                  onClick={() => handleTabSwitch(timerName)}
+                >
+                  {timerName}
+                </button>
+              );
+            },
+          )}
+        </div>
+        <div className={styles.tabPanel}>
+          {' '}
+          <Timer
+            initialTime={initialTime}
+            statusText={timerState.status === 'paused' ? 'start' : 'pause'}
+            currentTime={timerState.currentTime}
+            toggle={toggleTimer}
+            reset={() => resetTimer('pomodoro')}
+          />
+        </div>
+      </div>
 
       <div className={styles.footer}>
         <button onClick={open} data-testid="settings">

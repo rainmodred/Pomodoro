@@ -1,57 +1,123 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { getFromStrorage, setToStorage } from '../utils';
+import { getFromStorage, setToStorage } from '../utils/utils';
+import {
+  Color,
+  Sound,
+  Timers,
+  defaultColors,
+  defaultTimers,
+} from '../utils/constants';
 
-let root = document.documentElement;
-
-type TimerType = {
-  label: string;
-  time: number;
-};
-
-export type Colors = '#f67174' | '#75f3f7' | '#d880f5';
+const root = document.documentElement;
 
 type Settings = {
-  timers: TimerType[];
-  selectedColor: Colors;
-};
-
-type ACTIONTYPE = {
-  type: 'updateSettings';
-  payload: {
-    timers: Record<string, string>;
-    selectedColor: string;
+  timers: Timers;
+  selectedColor: (typeof defaultColors)[number];
+  sound: {
+    name: Sound;
+    volume: number;
   };
+  autostart: boolean;
+  notification: boolean;
 };
 
-const initialState: Settings = {
-  timers: [
-    { label: 'pomodoro', time: 1500 },
-    { label: 'short break', time: 300 },
-    { label: 'long break', time: 600 },
-  ],
-  selectedColor: '#f67174',
+type ACTIONTYPE =
+  | {
+      type: 'updateSound';
+      payload: {
+        name: Sound;
+        volume: number;
+      };
+    }
+  | {
+      type: 'updateColor';
+      payload: Color;
+    }
+  | {
+      type: 'updateTimers';
+      payload: Timers;
+    }
+  | {
+      type: 'updateAutostart';
+      payload: boolean;
+    }
+  | {
+      type: 'updateNotification';
+      payload: boolean;
+    };
+
+export const initialSettings: Settings = {
+  timers: defaultTimers,
+  selectedColor: defaultColors[0],
+  sound: {
+    name: 'Analog Alarm',
+    volume: 50,
+  },
+  autostart: false,
+  notification: false,
 };
 
 function getInitialState() {
-  return getFromStrorage('settings') || initialState;
+  return getFromStorage('settings') || initialSettings;
 }
 
-function reducer(state: typeof initialState, action: ACTIONTYPE) {
+function reducer(state: typeof initialSettings, action: ACTIONTYPE) {
+  let updatedSettings: Settings | null = null;
+
   switch (action.type) {
-    case 'updateSettings':
-      const { selectedColor, timers } = action.payload;
-
-      const updatedSetting: Settings = {
+    case 'updateTimers': {
+      const timers = action.payload;
+      updatedSettings = {
         ...state,
-        timers: Object.entries(timers).map(([label, value]) => ({
-          label,
-          time: Number(value) * 60,
-        })),
-        selectedColor: selectedColor as Colors,
+        timers,
       };
-      setToStorage('settings', updatedSetting);
+      setToStorage('settings', updatedSettings);
+      return updatedSettings;
+    }
+    case 'updateColor': {
+      const color = action.payload;
+      updatedSettings = {
+        ...state,
+        selectedColor: color,
+      };
+      setToStorage('settings', updatedSettings);
 
-      return updatedSetting;
+      return updatedSettings;
+    }
+    case 'updateSound': {
+      const { name, volume } = action.payload;
+      updatedSettings = {
+        ...state,
+        sound: {
+          name,
+          volume,
+        },
+      };
+      setToStorage('settings', updatedSettings);
+
+      return updatedSettings;
+    }
+    case 'updateAutostart': {
+      const autostart = action.payload;
+      updatedSettings = {
+        ...state,
+        autostart,
+      };
+      setToStorage('settings', updatedSettings);
+
+      return updatedSettings;
+    }
+    case 'updateNotification': {
+      const notification = action.payload;
+      updatedSettings = {
+        ...state,
+        notification,
+      };
+
+      setToStorage('settings', updatedSettings);
+
+      return updatedSettings;
+    }
 
     default:
       throw new Error();
@@ -69,8 +135,16 @@ function SettingsProvider({ children }: SettingsProviderProps): JSX.Element {
   const [settings, dispatch] = useReducer(reducer, getInitialState());
 
   useEffect(() => {
-    root.style.setProperty('--color-main', settings.selectedColor);
-  }, [settings.selectedColor]);
+    Notification.requestPermission().then(permission => {
+      if (permission === 'denied') {
+        dispatch({ type: 'updateNotification', payload: false });
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    root.style.setProperty('--color-main', settings.selectedColor.hex);
+  }, [settings.selectedColor.hex]);
 
   return (
     <SettingsContext.Provider value={[settings, dispatch]}>

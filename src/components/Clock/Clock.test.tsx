@@ -3,8 +3,8 @@ import Clock from './Clock';
 
 describe('Clock', () => {
   it('renders Clock', () => {
-    render(<Clock time={1500} id="meow" />);
+    render(<Clock time={1500} />);
 
-    expect(screen.getByTestId('meow-clock')).toHaveTextContent('25:00');
+    expect(screen.getByTestId('clock')).toHaveTextContent('25:00');
   });
 });

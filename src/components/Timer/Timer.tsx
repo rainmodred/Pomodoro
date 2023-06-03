@@ -2,63 +2,38 @@ import { useEffect, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 
 import Clock from '../Clock/Clock';
-import ProgressRing from '../ProgressRing/ProgressRing';
+import ProgressRing from './ProgressRing/ProgressRing';
 
 import styles from './Timer.module.css';
-import useTimer from './useTimer';
 
 interface TimerProps {
-  id: string;
-  time: number;
-  index: number;
-  tabIndex: number;
+  statusText: 'start' | 'pause';
+  initialTime: number;
+  currentTime: number;
+  toggle: () => void;
+  reset: () => void;
 }
 
 export default function Timer({
-  id,
-  time,
-  index,
-  tabIndex,
+  statusText,
+  currentTime,
+  initialTime,
+  toggle,
+  reset,
 }: TimerProps): JSX.Element {
-  const { status, currentTime, toggle, reset } = useTimer(time);
-
   const [progress, setProgress] = useState(100);
   const [{ selectedColor }] = useSettings();
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.code === 'Space') {
-        toggle();
-      }
-    }
-
-    if (index === tabIndex) {
-      document.addEventListener('keydown', handleKeyDown);
-    }
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [index, tabIndex, toggle]);
-
-  useEffect(() => {
-    setProgress(100);
-    reset();
-  }, [tabIndex, reset]);
-
-  useEffect(() => {
-    setProgress(Math.floor((currentTime / time) * 100));
-  }, [currentTime, time]);
-
-  function handleReset() {
-    setProgress(100);
-    reset();
-  }
+    setProgress(Math.floor((currentTime / initialTime) * 100));
+  }, [currentTime, initialTime]);
 
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <button
           onClick={toggle}
-          data-testid={`${id}-start`}
+          data-testid="toggle"
           disabled={currentTime === 0}
           className={styles.timer}
         >
@@ -66,16 +41,12 @@ export default function Timer({
             progress={progress}
             radius={140}
             stroke={8}
-            color={selectedColor}
+            color={selectedColor.hex}
           />
-          <Clock time={currentTime} id={id} />
-          <p className={styles.status}>{status}</p>
+          <Clock time={currentTime} />
+          <p className={styles.status}>{statusText}</p>
         </button>
-        <button
-          className={styles.reset}
-          onClick={handleReset}
-          data-testid={`${id}-reset`}
-        >
+        <button className={styles.reset} onClick={reset} data-testid="reset">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="icon icon-tabler icon-tabler-refresh"
