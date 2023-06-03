@@ -129,6 +129,16 @@ describe('Pomodoro', () => {
     expect(await screen.findByTestId('clock')).toHaveTextContent('25:00');
   });
 
+  it('should not change tab on reset timer', async () => {
+    render(<Pomodoro />, { wrapper });
+
+    await user.click(screen.getByRole('button', { name: /short break/i }));
+    await user.click(screen.getByTestId('toggle'));
+    await user.click(screen.getByTestId('reset'));
+
+    expect(await screen.findByTestId('clock')).toHaveTextContent('05:00');
+  });
+
   it('should open settings dialog', async () => {
     render(<Pomodoro />, { wrapper });
 

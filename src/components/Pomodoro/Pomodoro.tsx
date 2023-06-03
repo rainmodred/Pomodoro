@@ -50,7 +50,7 @@ export default function Pomodoro(): JSX.Element {
             statusText={timerState.status === 'paused' ? 'start' : 'pause'}
             currentTime={timerState.currentTime}
             toggle={toggleTimer}
-            reset={() => resetTimer('pomodoro')}
+            reset={() => resetTimer(timerState.timerName)}
           />
         </div>
       </div>
