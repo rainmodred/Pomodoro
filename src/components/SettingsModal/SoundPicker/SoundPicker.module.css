@@ -1,0 +1,11 @@
+.soundItem {
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 4rem;
+}
+
+.soundSelect {
+  font-size: 0.875rem;
+}
