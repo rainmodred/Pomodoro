@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { sounds } from '../../constants';
+import { Sound, sounds } from '../../constants';
 import { useSettings } from '../../context/SettingsContext';
 
 interface UseSoundType {
-  play: () => void;
+  play: (soundName: Sound) => void;
 }
 
 export default function useSound({
@@ -24,7 +24,7 @@ export default function useSound({
     return newAudio;
   });
 
-  const play = useCallback(() => {
+  const play = useCallback((soundName: Sound) => {
     setIsPlaying(true);
   }, []);
 

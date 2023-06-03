@@ -1,4 +1,4 @@
-import { Select, SelectItem } from '../../Select/Select';
+import { Select, SelectItem } from '../../ui/Select/Select';
 import { Sound, sounds } from '../../../constants';
 import VolumeSlider from './VolumeSlider/VolumeSlider';
 
@@ -20,10 +20,10 @@ export default function SoundPicker({
 }: SoundPicker) {
   const soundsList = Object.keys(sounds);
 
-  const { play } = useSound({ volume, duration: 5000 });
+  const { play } = useSound({ volume, duration: 2000 });
 
   function handleSoundChange(value: Sound) {
-    play();
+    play(value);
     onSoundChange(value);
   }
 

@@ -25,4 +25,23 @@ function timeToMinSec(time: number) {
   };
 }
 
-export { getFromStorage, setToStorage, timeToMinSec };
+function convertToSeconds(time: number) {
+  return time * 60;
+}
+
+function sendNotification() {
+  if (window.Notification && Notification.permission !== 'denied') {
+    new Notification('Pomodoro', {
+      body: 'Your time is up!',
+      silent: true,
+    });
+  }
+}
+
+export {
+  getFromStorage,
+  setToStorage,
+  timeToMinSec,
+  convertToSeconds,
+  sendNotification,
+};

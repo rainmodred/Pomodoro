@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 
 import Clock from '../Clock/Clock';
-import { StatusText } from '../Pomodoro/useTimer';
-import ProgressRing from '../ProgressRing/ProgressRing';
+import ProgressRing from './ProgressRing/ProgressRing';
 
 import styles from './Timer.module.css';
 
 interface TimerProps {
-  statusText: StatusText;
+  statusText: 'start' | 'pause';
   initialTime: number;
   currentTime: number;
   toggle: () => void;

@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Select, SelectItem } from '../Select/Select';
 import * as Dialog from '@radix-ui/react-dialog';
-import { ChevronDownIcon, Cross2Icon } from '@radix-ui/react-icons';
+import { Cross2Icon } from '@radix-ui/react-icons';
 
 import { initialSettings, useSettings } from '../../context/SettingsContext';
 import ColorPicker from './ColorPicker/ColorPicker';
-import NumberInput from '../NumberInput/NumberInput';
-import { Colors, sounds, Sound } from '../../constants';
+import NumberInput from '../ui/NumberInput/NumberInput';
+import { Color, Sound } from '../../constants';
 
 import styles from './SettingsModal.module.css';
 import SoundPicker from './SoundPicker/SoundPicker';
@@ -25,7 +24,7 @@ export default function SettingsModal({
   const [timers, setTimers] = useState({ ...settings.timers });
   const [selectedColor, setSelectedColor] = useState(settings.selectedColor);
 
-  const [currentSound, setCurrentSound] = useState<Sound>(settings.sound.name);
+  const [currentSound, setCurrentSound] = useState(settings.sound.name);
   const [volume, setVolume] = useState(settings.sound.volume);
 
   const [autostart, setAutostart] = useState(settings.autostart);
@@ -79,7 +78,7 @@ export default function SettingsModal({
     setTimers({ ...timers, [label]: value });
   }
 
-  function handleColorChange(color: Colors) {
+  function handleColorChange(color: Color) {
     setSelectedColor(color);
   }
 
@@ -91,7 +90,7 @@ export default function SettingsModal({
     setVolume(value);
   }
 
-  function handleAutostartChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleAutostartChange() {
     setAutostart(!autostart);
   }
 
