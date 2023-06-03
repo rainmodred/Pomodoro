@@ -1,11 +1,7 @@
 // your-select.jsx
 import React, { ComponentProps } from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from '@radix-ui/react-icons';
+import { CheckIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
 import styles from './Select.module.css';
 
@@ -42,6 +38,7 @@ export const Select = React.forwardRef<SelectRef, SelectProps>(
     );
   },
 );
+Select.displayName = 'Select';
 
 type SelectItemRef = HTMLDivElement;
 type SelectItemProps = ComponentProps<typeof SelectPrimitive.Item>;
@@ -62,3 +59,4 @@ export const SelectItem = React.forwardRef<SelectItemRef, SelectItemProps>(
     );
   },
 );
+SelectItem.displayName = 'SelectItem';
