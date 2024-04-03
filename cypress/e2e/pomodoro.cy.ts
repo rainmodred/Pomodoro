@@ -2,7 +2,7 @@
 
 describe('pomodoro app', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:4173/Pomodoro');
+    cy.visit('http://localhost:5173/Pomodoro/');
   });
 
   it('displays heading and pomodoro timer by default', () => {
@@ -13,6 +13,20 @@ describe('pomodoro app', () => {
     cy.clock();
     cy.findByRole('button', {
       name: /start/i,
+    }).click();
+    cy.tick(2000);
+    cy.findByTestId('clock').should('have.text', '24:58');
+  });
+
+  it('can pause timer', () => {
+    cy.clock();
+    cy.findByRole('button', {
+      name: /start/i,
+    }).click();
+    cy.tick(2000);
+    cy.findByTestId('clock').should('have.text', '24:58');
+    cy.findByRole('button', {
+      name: /pause/i,
     }).click();
     cy.tick(2000);
     cy.findByTestId('clock').should('have.text', '24:58');

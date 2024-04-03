@@ -44,6 +44,11 @@ function getSoundSrc(soundName: Sound) {
   return sounds[soundName];
 }
 
+function updateDocumentTitle(time: number) {
+  const { minutes, seconds } = timeToMinSec(time);
+  document.title = `${minutes}:${seconds}`;
+}
+
 export {
   getSoundSrc,
   getFromStorage,
@@ -51,4 +56,5 @@ export {
   timeToMinSec,
   convertToSeconds,
   sendNotification,
+  updateDocumentTitle,
 };

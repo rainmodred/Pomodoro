@@ -75,7 +75,7 @@ export default function SettingsModal({
   }
 
   function handleTimerChange(label: string, value: string) {
-    setTimers({ ...timers, [label]: value });
+    setTimers({ ...timers, [label]: Number(value) });
   }
 
   function handleColorChange(color: Color) {

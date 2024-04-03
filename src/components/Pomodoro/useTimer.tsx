@@ -5,24 +5,30 @@ import {
   convertToSeconds,
   getSoundSrc,
   sendNotification,
-  timeToMinSec,
+  updateDocumentTitle,
 } from '../../utils/utils';
 import useSound from './useSound';
+import useWorker from './useWorker';
 import { Timers } from '../../utils/constants';
+
+type TimerStatus = 'started' | 'paused';
 
 interface TimerState {
   timerName: keyof Timers;
-  status: 'started' | 'paused';
+  status: TimerStatus;
   currentTime: number;
+  usedShortBreaks: number;
 }
 
 export default function useTimer() {
   const [{ timers, sound, autostart }] = useSettings();
+  const { postMessage } = useWorker(onTick);
 
   const [timerState, setTimerState] = useState<TimerState>({
     timerName: 'pomodoro',
     status: 'paused',
     currentTime: convertToSeconds(timers['pomodoro']),
+    usedShortBreaks: 0,
   });
 
   const soundSrc = getSoundSrc(sound.name);
@@ -31,79 +37,65 @@ export default function useTimer() {
     duration: 2000,
   });
 
-  const timerId = useRef(0);
-  const usedShortBreaks = useRef(0);
+  function onTick() {
+    setTimerState(state => {
+      const nextTime = state.currentTime - 1;
+      updateDocumentTitle(nextTime);
+      if (nextTime > 0) {
+        return {
+          ...state,
+          currentTime: nextTime,
+        };
+      }
+      play();
+      sendNotification();
+      let nextTimerStatus: TimerStatus = autostart ? 'started' : 'paused';
+      postMessage(nextTimerStatus);
+      //CYCLE: pomodoro => short break => pomodoro => long break
+
+      if (state.timerName === 'pomodoro') {
+        let nextTimerName: keyof Timers = 'short break';
+        if (state.usedShortBreaks + 1 > 1) {
+          nextTimerName = 'long break';
+        }
+
+        return {
+          status: nextTimerStatus,
+          timerName: nextTimerName,
+          currentTime: convertToSeconds(timers[nextTimerName]),
+          usedShortBreaks: nextTimerName === 'long break' ? 0 : 1,
+        };
+      } else if (state.timerName === 'long break') {
+        postMessage('paused');
+        return {
+          status: 'paused', //Stop cycling after long break
+          timerName: 'pomodoro',
+          currentTime: convertToSeconds(timers['pomodoro']),
+          usedShortBreaks: 0,
+        };
+      } else if (state.timerName === 'short break') {
+        return {
+          status: nextTimerStatus,
+          timerName: 'pomodoro',
+          currentTime: convertToSeconds(timers['pomodoro']),
+          usedShortBreaks: state.usedShortBreaks + 1,
+        };
+      }
+      return { ...state };
+    });
+  }
 
   useEffect(() => {
     resetTimer(timerState.timerName);
   }, [timers]);
 
-  useEffect(() => {
-    if (autostart) {
-      startTimer();
-    }
-  }, [timerState.timerName]);
-
-  const startTime = useRef(0);
-  const lastTime = useRef(0);
-
-  function startTimer() {
-    startTime.current = Date.now();
-    lastTime.current = 0;
-    setTimerState(state => ({ ...state, status: 'started' }));
-    timerId.current = window.setInterval(() => {
-      const elapsedTime = Date.now() - startTime.current;
-      const timeInSeconds = Math.round(elapsedTime / 1000);
-
-      if (timeInSeconds !== lastTime.current) {
-        lastTime.current = timeInSeconds;
-        setTimerState(state => {
-          if (state.currentTime === 0) {
-            play();
-            sendNotification();
-            window.clearInterval(timerId.current);
-            if (
-              state.timerName === 'short break' ||
-              state.timerName === 'long break'
-            ) {
-              usedShortBreaks.current =
-                state.timerName === 'short break' ? 1 : 0;
-              return {
-                status: 'paused',
-                timerName: 'pomodoro',
-                currentTime: convertToSeconds(timers['pomodoro']),
-              };
-            }
-            if (state.timerName === 'pomodoro') {
-              const nextTimerName =
-                usedShortBreaks.current === 1 ? 'long break' : 'short break';
-              return {
-                status: 'paused',
-                timerName: nextTimerName,
-                currentTime: convertToSeconds(timers[nextTimerName]),
-              };
-            }
-            throw new Error('send help');
-          }
-
-          const { minutes, seconds } = timeToMinSec(state.currentTime - 1);
-          document.title = `${minutes}:${seconds}`;
-
-          return {
-            ...state,
-            currentTime: state.currentTime - 1,
-          };
-        });
-      }
-    }, 100);
-  }
-
   function resetTimer(timerName: keyof Timers = 'pomodoro') {
-    window.clearInterval(timerId.current);
+    postMessage('paused');
     setTimerState({
       timerName,
       status: 'paused',
       currentTime: convertToSeconds(timers[timerName]),
+      usedShortBreaks: 0,
     });
   }
 
@@ -113,20 +105,17 @@ export default function useTimer() {
     }
 
     if (timerState.status === 'paused') {
-      startTimer();
+      postMessage('started');
+      setTimerState(state => ({ ...state, status: 'started' }));
       return;
     }
 
     if (timerState.status === 'started') {
-      window.clearInterval(timerId.current);
+      postMessage('paused');
       setTimerState(state => ({ ...state, status: 'paused' }));
       return;
     }
   }
-
-  useEffect(() => {
-    return () => window.clearInterval(timerId.current);
-  }, []);
 
   return { timerState, toggleTimer, resetTimer };
 }

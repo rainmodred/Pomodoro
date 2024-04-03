@@ -50,7 +50,7 @@ export const initialSettings: Settings = {
   timers: defaultTimers,
   selectedColor: defaultColors[0],
   sound: {
-    name: 'Analog Alarm',
+    name: 'Digital Alarm',
     volume: 50,
   },
   autostart: false,
