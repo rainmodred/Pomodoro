@@ -1,0 +1,1 @@
+(function(){"use strict";let e,t,s=0;onmessage=i=>{const{action:a}=i.data;a==="started"?(clearInterval(e),t=Date.now(),e=self.setInterval(()=>{const l=Date.now()-t,n=Math.round(l/1e3);n!==s&&(s=n,postMessage("tick"))},1e3)):a==="paused"&&clearInterval(e)}})();
